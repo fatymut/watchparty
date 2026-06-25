@@ -1,0 +1,76 @@
+@startuml WatchParty - Diagramme de classes (Backend)
+' Diagramme de classes du domaine métier WatchParty
+' Calqué sur les modèles Go (internal/models) et le schéma MySQL (internal/database/database.go)
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide circle
+
+class User {
+  - id : int
+  - username : string
+  - email : string
+  - passwordHash : string
+  - createdAt : datetime
+}
+
+class WatchParty {
+  - id : int
+  - title : string
+  - description : string
+  - date : datetime
+  - status : string
+  - creatorId : int
+  - createdAt : datetime
+}
+
+class Movie {
+  - id : int
+  - title : string
+  - genre : string
+  - duration : int
+  - releaseYear : int
+  - synopsis : string
+  - posterUrl : string
+  - createdAt : datetime
+}
+
+class Swipe {
+  - id : int
+  - userId : int
+  - movieId : int
+  - watchPartyId : int
+  - value : string  ' "like" ou "dislike"
+  - swipedAt : datetime
+}
+
+class Recommendation {
+  - id : int
+  - watchPartyId : int
+  - movieId : int
+  - likesCount : int
+  - createdAt : datetime
+}
+
+' ----- Relations -----
+
+' Un utilisateur peut créer plusieurs watch parties
+User "1" --> "0..*" WatchParty : crée >
+
+' Un swipe relie un utilisateur, un film et une watch party
+User "1" --> "0..*" Swipe : effectue >
+Movie "1" --> "0..*" Swipe : reçoit >
+WatchParty "1" --> "0..*" Swipe : contient >
+
+' Une watch party aboutit à une ou plusieurs recommandations (historique),
+' chaque recommandation désigne un film gagnant
+WatchParty "1" --> "0..*" Recommendation : génère >
+Movie "1" --> "0..*" Recommendation : est recommandé dans >
+
+note bottom of Swipe
+  Contrainte d'unicité :
+  UNIQUE (userId, movieId, watchPartyId)
+  => 1 seul swipe par user/film/party
+end note
+
+@enduml

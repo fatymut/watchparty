@@ -1,0 +1,36 @@
+@startuml WatchParty - Séquence : Générer la recommandation
+' Scénario : calcul du film le plus liké d'une watch party
+' Endpoint : POST /api/parties/{id}/recommendation/generate
+
+skinparam shadowing false
+autonumber
+
+actor "Organisateur" as User
+participant "Frontend\n(React)" as Front
+participant "Router\n(net/http)" as Router
+participant "GenerateRecommendation\n(controller)" as Ctrl
+database "MySQL" as DB
+
+User -> Front : clique « Calculer le film »
+Front -> Router : POST /api/parties/1/recommendation/generate
+Router -> Ctrl : route generate
+
+Ctrl -> DB : SELECT movie_id, COUNT(*) AS likes\nFROM swipes\nWHERE watch_party_id=? AND value='like'\nGROUP BY movie_id\nORDER BY likes DESC LIMIT 1
+note right of DB
+  Cœur de l'algorithme :
+  on compte les likes par film
+  et on garde le meilleur
+end note
+
+alt aucun like pour cette party
+  DB --> Ctrl : 0 ligne (sql.ErrNoRows)
+  Ctrl --> Front : 404 Not Found {error}
+else un gagnant existe
+  DB --> Ctrl : movieId, likesCount
+  Ctrl -> DB : INSERT INTO recommendations\n(watch_party_id, movie_id, likes_count)
+  DB --> Ctrl : id de la recommandation
+  Ctrl --> Front : 200 OK {recommendation}
+  Front --> User : affiche le film recommandé
+end
+
+@enduml

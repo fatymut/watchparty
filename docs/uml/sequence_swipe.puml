@@ -1,0 +1,38 @@
+@startuml WatchParty - Séquence : Enregistrer un swipe
+' Scénario : un participant swipe un film (like / dislike)
+' Endpoint : POST /api/parties/{id}/swipes
+
+skinparam shadowing false
+autonumber
+
+actor "Participant" as User
+participant "Frontend\n(React)" as Front
+participant "Middleware\nCORS" as CORS
+participant "Router\n(net/http)" as Router
+participant "CreateSwipe\n(controller)" as Ctrl
+database "MySQL\n(table swipes)" as DB
+
+User -> Front : swipe à droite / à gauche
+Front -> CORS : POST /api/parties/1/swipes\n{userId, movieId, value}
+CORS -> Router : requête autorisée (CORS OK)
+Router -> Ctrl : route POST /parties/{id}/swipes
+
+Ctrl -> Ctrl : décode le JSON\n+ valide (value = like/dislike)
+
+alt données invalides
+  Ctrl --> Front : 400 Bad Request {error}
+else données valides
+  Ctrl -> DB : INSERT ... ON DUPLICATE KEY UPDATE
+  note right of DB
+    La contrainte UNIQUE
+    (userId, movieId, watchPartyId)
+    transforme un re-swipe
+    en mise à jour
+  end note
+  DB --> Ctrl : OK
+  Ctrl --> Front : 201 Created {message}
+end
+
+Front --> User : carte suivante affichée
+
+@enduml
