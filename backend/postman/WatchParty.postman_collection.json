@@ -1,0 +1,154 @@
+{
+  "info": {
+    "name": "WatchParty API",
+    "description": "Collection de test de l'API backend WatchParty (Go + MySQL). Suivre l'ordre des dossiers.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8082" },
+    { "key": "partyId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "1. Health",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/health", "host": ["{{baseUrl}}"], "path": ["api", "health"] }
+      }
+    },
+    {
+      "name": "1b. Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"amel\",\n  \"email\": \"amel@watchparty.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/register", "host": ["{{baseUrl}}"], "path": ["api", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo@watchparty.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/login", "host": ["{{baseUrl}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/users", "host": ["{{baseUrl}}"], "path": ["api", "users"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Movies",
+      "item": [
+        {
+          "name": "Create Movie",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Inception\",\n  \"genre\": \"Sci-Fi\",\n  \"duration\": 148,\n  \"releaseYear\": 2010,\n  \"synopsis\": \"Un voleur qui s'infiltre dans les rêves.\",\n  \"posterUrl\": \"https://example.com/inception.jpg\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/movies", "host": ["{{baseUrl}}"], "path": ["api", "movies"] }
+          }
+        },
+        {
+          "name": "List Movies",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/movies", "host": ["{{baseUrl}}"], "path": ["api", "movies"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Parties",
+      "item": [
+        {
+          "name": "Create Party",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Soiree du vendredi\",\n  \"description\": \"Film d'horreur\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties", "host": ["{{baseUrl}}"], "path": ["api", "parties"] }
+          }
+        },
+        {
+          "name": "List Parties",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties", "host": ["{{baseUrl}}"], "path": ["api", "parties"] }
+          }
+        },
+        {
+          "name": "Get Party By Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Swipes",
+      "item": [
+        {
+          "name": "Create Swipe (like)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"movieId\": 1,\n  \"value\": \"like\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/swipes", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "swipes"] }
+          }
+        },
+        {
+          "name": "List Swipes",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/swipes", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "swipes"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Recommendation",
+      "item": [
+        {
+          "name": "Generate Recommendation",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/recommendation/generate", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "recommendation", "generate"] }
+          }
+        },
+        {
+          "name": "Get Recommendation",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/recommendation", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "recommendation"] }
+          }
+        }
+      ]
+    }
+  ]
+}

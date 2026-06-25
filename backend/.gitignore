@@ -1,0 +1,19 @@
+# Binaires compilés
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/server
+/cmd/cmd
+
+# Variables d'environnement
+.env
+
+# Logs
+*.log
+
+# Fichiers OS / éditeurs
+.DS_Store
+.idea/
+.vscode/
