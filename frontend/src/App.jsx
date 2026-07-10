@@ -1,17 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import HomePage from './pages/HomePage';
+import SwipePage from './pages/SwipePage';
 
 function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Tailwind is working!
-      </h1>
-    </div>
-  );
+  const [currentPage, setCurrentPage] = useState('home'); // 'home' or 'swipe'
+
+  if (currentPage === 'swipe') {
+    return <SwipePage onBack={() => setCurrentPage('home')} />;
+  }
+
+  return <HomePage onStartSwipe={() => setCurrentPage('swipe')} />;
 }
 
 export default App;
