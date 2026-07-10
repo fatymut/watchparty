@@ -30,6 +30,18 @@ func New(db *sql.DB) http.Handler {
 	mux.HandleFunc("POST /api/parties", controllers.CreateParty(db))
 	mux.HandleFunc("GET /api/parties/{id}", controllers.GetPartyByID(db))
 
+	// Participants
+	mux.HandleFunc("POST /api/parties/{id}/participants", controllers.CreateParticipant(db))
+	mux.HandleFunc("GET /api/parties/{id}/participants", controllers.GetParticipants(db))
+
+	// Invitations
+	mux.HandleFunc("POST /api/parties/{id}/invitations", controllers.CreateInvitation(db))
+	mux.HandleFunc("POST /api/invitations/{token}/accept", controllers.AcceptInvitation(db))
+
+	// Commentaires
+	mux.HandleFunc("POST /api/parties/{id}/comments", controllers.CreateComment(db))
+	mux.HandleFunc("GET /api/parties/{id}/comments", controllers.GetComments(db))
+
 	// Swipes (cœur du projet)
 	mux.HandleFunc("POST /api/parties/{id}/swipes", controllers.CreateSwipe(db))
 	mux.HandleFunc("GET /api/parties/{id}/swipes", controllers.GetSwipes(db))

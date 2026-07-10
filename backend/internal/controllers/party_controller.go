@@ -137,6 +137,15 @@ func CreateParty(db *sql.DB) http.HandlerFunc {
 		}
 
 		id, _ := res.LastInsertId()
+
+		// Le créateur devient automatiquement participant de sa propre party.
+		if in.CreatorID != 0 {
+			db.Exec(
+				`INSERT INTO participants (watch_party_id, user_id, role) VALUES (?, ?, 'creator')`,
+				id, in.CreatorID,
+			)
+		}
+
 		WriteJSON(w, http.StatusCreated, map[string]any{
 			"id":          id,
 			"title":       in.Title,

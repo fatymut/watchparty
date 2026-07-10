@@ -86,6 +86,37 @@ func Migrate(db *sql.DB) error {
 		FOREIGN KEY (watch_party_id) REFERENCES watch_parties(id) ON DELETE CASCADE,
 		FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
 	);
+
+	CREATE TABLE IF NOT EXISTS participants (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		watch_party_id INT NOT NULL,
+		user_id INT NOT NULL,
+		role VARCHAR(20) DEFAULT 'member',
+		joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (watch_party_id) REFERENCES watch_parties(id) ON DELETE CASCADE,
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+		UNIQUE KEY unique_participant (watch_party_id, user_id)
+	);
+
+	CREATE TABLE IF NOT EXISTS invitations (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		watch_party_id INT NOT NULL,
+		invited_email VARCHAR(150) NOT NULL,
+		token VARCHAR(100) NOT NULL UNIQUE,
+		status VARCHAR(20) DEFAULT 'pending',
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (watch_party_id) REFERENCES watch_parties(id) ON DELETE CASCADE
+	);
+
+	CREATE TABLE IF NOT EXISTS comments (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		watch_party_id INT NOT NULL,
+		user_id INT NOT NULL,
+		content TEXT NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (watch_party_id) REFERENCES watch_parties(id) ON DELETE CASCADE,
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+	);
 	`
 
 	_, err := db.Exec(query)

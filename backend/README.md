@@ -60,7 +60,11 @@ internal/
     party_controller.go
     swipe_controller.go            <- enregistrement des swipes
     recommendation_controller.go   <- calcul du film le plus liké
-  models/                    structs Go (User, Movie, WatchParty, Swipe, Recommendation)
+    participant_controller.go      <- gestion des participants d'une party
+    invitation_controller.go       <- invitations par email + acceptation
+    comment_controller.go          <- commentaires sur une party
+  models/                    structs Go (User, Movie, WatchParty, Swipe, Recommendation,
+                              Participant, Invitation, Comment)
 ```
 
 ## Endpoints
@@ -80,6 +84,12 @@ internal/
 | GET  | `/api/parties/{id}/swipes` | Lister les swipes d'une party |
 | POST | `/api/parties/{id}/recommendation/generate` | Calculer le film le plus liké |
 | GET  | `/api/parties/{id}/recommendation` | Dernière recommandation (avec le film) |
+| POST | `/api/parties/{id}/participants` | Ajouter un participant à une party |
+| GET  | `/api/parties/{id}/participants` | Lister les participants d'une party |
+| POST | `/api/parties/{id}/invitations` | Inviter un email à rejoindre une party (génère un token) |
+| POST | `/api/invitations/{token}/accept` | Accepter une invitation → crée le participant |
+| POST | `/api/parties/{id}/comments` | Ajouter un commentaire sur une party |
+| GET  | `/api/parties/{id}/comments` | Lister les commentaires d'une party |
 
 ### Exemples de corps de requête
 
@@ -96,6 +106,26 @@ internal/
 **POST /api/parties/{id}/swipes**
 ```json
 { "userId": 1, "movieId": 2, "value": "like" }
+```
+
+**POST /api/parties/{id}/participants**
+```json
+{ "userId": 3 }
+```
+
+**POST /api/parties/{id}/invitations**
+```json
+{ "email": "ami@example.com" }
+```
+
+**POST /api/invitations/{token}/accept**
+```json
+{ "userId": 3 }
+```
+
+**POST /api/parties/{id}/comments**
+```json
+{ "userId": 1, "content": "Hâte de voir ce film !" }
 ```
 
 ## Algorithme de recommandation
@@ -115,3 +145,5 @@ LIMIT 1;
 
 - Requêtes **paramétrées** (`?`) partout → protection contre les injections SQL.
 - Contrainte `UNIQUE (user_id, movie_id, watch_party_id)` sur `swipes` → un seul swipe par user/film/party (re-swipe = mise à jour via `ON DUPLICATE KEY UPDATE`).
+- Contrainte `UNIQUE (watch_party_id, user_id)` sur `participants` → un utilisateur ne peut pas rejoindre deux fois la même party.
+- Token d'invitation généré avec `crypto/rand` (aléatoire cryptographique, pas `math/rand`) et marqué `accepted` après usage pour empêcher la réutilisation.

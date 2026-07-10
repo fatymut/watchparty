@@ -6,7 +6,9 @@
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:8082" },
-    { "key": "partyId", "value": "1" }
+    { "key": "partyId", "value": "1" },
+    { "key": "userId", "value": "1" },
+    { "key": "invitationToken", "value": "" }
   ],
   "item": [
     {
@@ -146,6 +148,155 @@
           "request": {
             "method": "GET",
             "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/recommendation", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "recommendation"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Participants",
+      "item": [
+        {
+          "name": "Add Participant",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}}\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/participants", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "participants"] }
+          }
+        },
+        {
+          "name": "Add Participant (duplicate -> 409 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}}\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/participants", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "participants"] }
+          }
+        },
+        {
+          "name": "List Participants",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/participants", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "participants"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Invitations",
+      "item": [
+        {
+          "name": "Create Invitation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invite@watchparty.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/invitations", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "invitations"] }
+          }
+        },
+        {
+          "name": "Accept Invitation (remplacer {{invitationToken}} par le token reçu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}}\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/invitations/{{invitationToken}}/accept", "host": ["{{baseUrl}}"], "path": ["api", "invitations", "{{invitationToken}}", "accept"] }
+          }
+        },
+        {
+          "name": "Accept Invitation again (deja utilisee -> 409 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}}\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/invitations/{{invitationToken}}/accept", "host": ["{{baseUrl}}"], "path": ["api", "invitations", "{{invitationToken}}", "accept"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Comments",
+      "item": [
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"content\": \"Hate de voir ce film !\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/comments", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "comments"] }
+          }
+        },
+        {
+          "name": "List Comments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/comments", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "comments"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Cas d'erreur",
+      "item": [
+        {
+          "name": "Login mauvais mot de passe (401 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo@watchparty.com\",\n  \"password\": \"mauvais\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/login", "host": ["{{baseUrl}}"], "path": ["api", "login"] }
+          }
+        },
+        {
+          "name": "Register email deja utilise (409 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"demo2\",\n  \"email\": \"demo@watchparty.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/register", "host": ["{{baseUrl}}"], "path": ["api", "register"] }
+          }
+        },
+        {
+          "name": "Swipe value invalide (400 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1,\n  \"movieId\": 1,\n  \"value\": \"peut-etre\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/swipes", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "swipes"] }
+          }
+        },
+        {
+          "name": "Recommendation sur party sans like (404 attendu)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/parties/999/recommendation/generate", "host": ["{{baseUrl}}"], "path": ["api", "parties", "999", "recommendation", "generate"] }
           }
         }
       ]
