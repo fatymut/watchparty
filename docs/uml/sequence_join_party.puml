@@ -1,0 +1,65 @@
+@startuml WatchParty - Séquence : Rejoindre une party (invitation)
+' Scénario : l'organisateur invite un ami par email, qui accepte l'invitation
+' et devient participant de la watch party.
+' Endpoints : POST /api/parties/{id}/invitations
+'             POST /api/invitations/{token}/accept
+
+skinparam shadowing false
+autonumber
+
+actor "Organisateur" as Owner
+actor "Invité" as Guest
+participant "Frontend\n(React)" as Front
+participant "Router\n(net/http)" as Router
+participant "CreateInvitation\n(controller)" as CtrlInv
+participant "AcceptInvitation\n(controller)" as CtrlAccept
+database "MySQL\n(invitations, participants)" as DB
+
+== 1. Créer l'invitation ==
+
+Owner -> Front : invite un ami par email
+Front -> Router : POST /api/parties/1/invitations\n{email}
+Router -> CtrlInv : route POST /parties/{id}/invitations
+
+CtrlInv -> CtrlInv : décode le JSON\n+ valide (email requis)
+CtrlInv -> CtrlInv : generateToken()\n(crypto/rand, 32 caractères hex)
+note right of CtrlInv
+  Token aléatoire cryptographique,
+  imprévisible (pas math/rand)
+end note
+
+CtrlInv -> DB : INSERT INTO invitations\n(watch_party_id, invited_email, token, status='pending')
+DB --> CtrlInv : id de l'invitation
+CtrlInv --> Front : 201 Created {token, status: "pending"}
+Front --> Owner : lien d'invitation généré\n(ex: /invite/{token})
+
+Owner -> Guest : partage le lien / token\n(email, message... hors périmètre API)
+
+== 2. Accepter l'invitation ==
+
+Guest -> Front : ouvre le lien, se connecte,\nclique « Rejoindre »
+Front -> Router : POST /api/invitations/{token}/accept\n{userId}
+Router -> CtrlAccept : route POST /invitations/{token}/accept
+
+CtrlAccept -> DB : SELECT * FROM invitations WHERE token=?
+
+alt token introuvable
+  DB --> CtrlAccept : 0 ligne (sql.ErrNoRows)
+  CtrlAccept --> Front : 404 Not Found {error}
+else invitation déjà utilisée
+  DB --> CtrlAccept : status = 'accepted'
+  CtrlAccept --> Front : 409 Conflict {error}
+else invitation valide (status = 'pending')
+  DB --> CtrlAccept : invitation trouvée
+  CtrlAccept -> DB : INSERT INTO participants\n(watch_party_id, user_id, role='member')
+  note right of DB
+    Contrainte UNIQUE (watchPartyId, userId)
+    => ignorée si déjà participant
+  end note
+  CtrlAccept -> DB : UPDATE invitations\nSET status='accepted'
+  DB --> CtrlAccept : OK
+  CtrlAccept --> Front : 200 OK {message}
+  Front --> Guest : redirigé vers la watch party,\nmaintenant participant
+end
+
+@enduml

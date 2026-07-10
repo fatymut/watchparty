@@ -8,7 +8,8 @@
     { "key": "baseUrl", "value": "http://localhost:8082" },
     { "key": "partyId", "value": "1" },
     { "key": "userId", "value": "1" },
-    { "key": "invitationToken", "value": "" }
+    { "key": "invitationToken", "value": "" },
+    { "key": "authToken", "value": "" }
   ],
   "item": [
     {
@@ -34,7 +35,7 @@
           }
         },
         {
-          "name": "Login",
+          "name": "Login (recupere le token dans la reponse)",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -50,6 +51,21 @@
           "request": {
             "method": "GET",
             "url": { "raw": "{{baseUrl}}/api/users", "host": ["{{baseUrl}}"], "path": ["api", "users"] }
+          }
+        },
+        {
+          "name": "Get Me sans token (401 attendu)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/me", "host": ["{{baseUrl}}"], "path": ["api", "me"] }
+          }
+        },
+        {
+          "name": "Get Me avec token (coller le token de Login dans la variable authToken)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/me", "host": ["{{baseUrl}}"], "path": ["api", "me"] }
           }
         }
       ]
@@ -74,6 +90,37 @@
           "request": {
             "method": "GET",
             "url": { "raw": "{{baseUrl}}/api/movies", "host": ["{{baseUrl}}"], "path": ["api", "movies"] }
+          }
+        },
+        {
+          "name": "Update Movie",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Inception (edition speciale)\",\n  \"genre\": \"Sci-Fi\",\n  \"duration\": 150,\n  \"releaseYear\": 2010,\n  \"synopsis\": \"...\",\n  \"posterUrl\": \"https://example.com/inception.jpg\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/movies/1", "host": ["{{baseUrl}}"], "path": ["api", "movies", "1"] }
+          }
+        },
+        {
+          "name": "Update Movie inexistant (404 attendu)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"x\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/movies/999", "host": ["{{baseUrl}}"], "path": ["api", "movies", "999"] }
+          }
+        },
+        {
+          "name": "Delete Movie (remplacer l'id par un film cree via Create Movie)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/movies/1", "host": ["{{baseUrl}}"], "path": ["api", "movies", "1"] }
           }
         }
       ]
@@ -104,6 +151,39 @@
           "name": "Get Party By Id",
           "request": {
             "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}"] }
+          }
+        },
+        {
+          "name": "Update Party",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Soiree du vendredi (renommee)\",\n  \"description\": \"Film d'horreur, finalement\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}"] }
+          }
+        },
+        {
+          "name": "Close Party",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/close", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "close"] }
+          }
+        },
+        {
+          "name": "Close Party again (deja fermee -> 409 attendu)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/close", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "close"] }
+          }
+        },
+        {
+          "name": "Delete Party (a lancer en dernier, supprime tout en cascade)",
+          "request": {
+            "method": "DELETE",
             "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}"] }
           }
         }
@@ -149,11 +229,90 @@
             "method": "GET",
             "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/recommendation", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "recommendation"] }
           }
+        },
+        {
+          "name": "Recommendation sur party sans like (404 attendu)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/parties/999/recommendation/generate", "host": ["{{baseUrl}}"], "path": ["api", "parties", "999", "recommendation", "generate"] }
+          }
         }
       ]
     },
     {
-      "name": "6. Participants",
+      "name": "6. Notation (bonus)",
+      "item": [
+        {
+          "name": "Notation sans film choisi/recommande (400 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"rating\": 4\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/notations", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "notations"] }
+          }
+        },
+        {
+          "name": "Choose Movie",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/choose-movie", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "choose-movie"] }
+          }
+        },
+        {
+          "name": "Create Notation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"rating\": 5\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/notations", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "notations"] }
+          }
+        },
+        {
+          "name": "Update Notation (meme user, upsert)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"rating\": 3\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/notations", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "notations"] }
+          }
+        },
+        {
+          "name": "Notation invalide, rating hors 1-5 (400 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"rating\": 9\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/notations", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "notations"] }
+          }
+        },
+        {
+          "name": "List Notations (avec moyenne)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/notations", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "notations"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Participants",
       "item": [
         {
           "name": "Add Participant",
@@ -189,7 +348,7 @@
       ]
     },
     {
-      "name": "7. Invitations",
+      "name": "8. Invitations",
       "item": [
         {
           "name": "Create Invitation",
@@ -230,7 +389,7 @@
       ]
     },
     {
-      "name": "8. Comments",
+      "name": "9. Comments",
       "item": [
         {
           "name": "Add Comment",
@@ -250,11 +409,25 @@
             "method": "GET",
             "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/comments", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "comments"] }
           }
+        },
+        {
+          "name": "Delete Comment (remplacer l'id par un commentaire cree via Add Comment)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/comments/1", "host": ["{{baseUrl}}"], "path": ["api", "comments", "1"] }
+          }
+        },
+        {
+          "name": "Delete Comment inexistant (404 attendu)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/comments/999", "host": ["{{baseUrl}}"], "path": ["api", "comments", "999"] }
+          }
         }
       ]
     },
     {
-      "name": "9. Cas d'erreur",
+      "name": "10. Cas d'erreur",
       "item": [
         {
           "name": "Login mauvais mot de passe (401 attendu)",
@@ -293,10 +466,15 @@
           }
         },
         {
-          "name": "Recommendation sur party sans like (404 attendu)",
+          "name": "Choose Movie sur party inexistante (404 attendu)",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{baseUrl}}/api/parties/999/recommendation/generate", "host": ["{{baseUrl}}"], "path": ["api", "parties", "999", "recommendation", "generate"] }
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"movieId\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parties/999/choose-movie", "host": ["{{baseUrl}}"], "path": ["api", "parties", "999", "choose-movie"] }
           }
         }
       ]

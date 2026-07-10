@@ -69,3 +69,61 @@ func CreateMovie(db *sql.DB) http.HandlerFunc {
 		WriteJSON(w, http.StatusCreated, m)
 	}
 }
+
+// UpdateMovie modifie un film existant (remplace tous les champs métier).
+// PUT /api/movies/{id}
+func UpdateMovie(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+
+		var m models.Movie
+		if err := json.NewDecoder(r.Body).Decode(&m); err != nil {
+			WriteError(w, http.StatusBadRequest, "JSON invalide")
+			return
+		}
+		if m.Title == "" {
+			WriteError(w, http.StatusBadRequest, "le titre est obligatoire")
+			return
+		}
+
+		res, err := db.Exec(
+			`UPDATE movies SET title = ?, genre = ?, duration = ?, release_year = ?, synopsis = ?, poster_url = ?
+			 WHERE id = ?`,
+			m.Title, m.Genre, m.Duration, m.ReleaseYear, m.Synopsis, m.PosterURL, id,
+		)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, "modification du film échouée")
+			return
+		}
+		rows, _ := res.RowsAffected()
+		if rows == 0 {
+			WriteError(w, http.StatusNotFound, "film introuvable")
+			return
+		}
+
+		WriteJSON(w, http.StatusOK, map[string]string{"message": "film modifié"})
+	}
+}
+
+// DeleteMovie supprime un film. Les swipes/recommandations/notations liés sont
+// supprimés en cascade (FK ON DELETE CASCADE) ; les parties qui l'avaient
+// comme chosen_movie_id le perdent proprement (FK ON DELETE SET NULL).
+// DELETE /api/movies/{id}
+func DeleteMovie(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+
+		res, err := db.Exec(`DELETE FROM movies WHERE id = ?`, id)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, "suppression du film échouée")
+			return
+		}
+		rows, _ := res.RowsAffected()
+		if rows == 0 {
+			WriteError(w, http.StatusNotFound, "film introuvable")
+			return
+		}
+
+		WriteJSON(w, http.StatusOK, map[string]string{"message": "film supprimé"})
+	}
+}

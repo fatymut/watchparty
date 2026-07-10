@@ -1,0 +1,93 @@
+@startuml WatchParty - Diagramme d'objets : avant/après génération de la recommandation
+' Scénario concret (repris des tests réels du backend) : une watch party avec des swipes
+' enregistrés, puis génération de la recommandation via POST /parties/{id}/recommendation/generate.
+' Montre l'état des instances avant et après cet appel.
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT generateRecommendation()" {
+
+  object "party5 : WatchParty" as party5before {
+    id = 5
+    title = "Soiree finale"
+    status = "draft"
+    chosenMovieId = null
+  }
+
+  object "movie1 : Movie" as movie1
+  movie1 : id = 1
+  movie1 : title = "Inception"
+
+  object "movie4 : Movie" as movie4before
+  movie4before : id = 4
+  movie4before : title = "Interstellar"
+
+  object "swipe1 : Swipe" as swipe1
+  swipe1 : id = 12
+  swipe1 : userId = 1
+  swipe1 : movieId = 4
+  swipe1 : watchPartyId = 5
+  swipe1 : value = "like"
+
+  object "swipe2 : Swipe" as swipe2
+  swipe2 : id = 13
+  swipe2 : userId = 5
+  swipe2 : movieId = 4
+  swipe2 : watchPartyId = 5
+  swipe2 : value = "like"
+
+  object "swipe3 : Swipe" as swipe3
+  swipe3 : id = 14
+  swipe3 : userId = 1
+  swipe3 : movieId = 1
+  swipe3 : watchPartyId = 5
+  swipe3 : value = "like"
+
+  party5before ..> swipe1 : contient
+  party5before ..> swipe2 : contient
+  party5before ..> swipe3 : contient
+  swipe1 ..> movie4before : porte sur
+  swipe2 ..> movie4before : porte sur
+  swipe3 ..> movie1 : porte sur
+
+  note bottom of party5before
+    Aucune Recommendation n'existe encore.
+    movie4 mène avec 2 likes (userId 1 et 5),
+    movie1 n'en a qu'un seul.
+  end note
+}
+
+package "APRÈS generateRecommendation()" {
+
+  object "party5 : WatchParty" as party5after {
+    id = 5
+    title = "Soiree finale"
+    status = "draft"
+    chosenMovieId = 4
+  }
+
+  object "movie4 : Movie" as movie4after
+  movie4after : id = 4
+  movie4after : title = "Interstellar"
+
+  object "reco1 : Recommendation" as reco1
+  reco1 : id = 1
+  reco1 : watchPartyId = 5
+  reco1 : movieId = 4
+  reco1 : likesCount = 2
+
+  party5after ..> reco1 : génère
+  reco1 ..> movie4after : désigne
+  party5after ..> movie4after : chosenMovieId >
+
+  note bottom of reco1
+    likesCount = COUNT(*) des swipes "like"
+    sur movie4 pour la party 5 (2).
+    party5.chosenMovieId passe de null à 4 :
+    le film recommandé devient le film choisi,
+    prêt à être noté (fonctionnalité bonus).
+  end note
+}
+
+@enduml

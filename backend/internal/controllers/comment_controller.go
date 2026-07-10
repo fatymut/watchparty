@@ -83,3 +83,24 @@ func GetComments(db *sql.DB) http.HandlerFunc {
 		WriteJSON(w, http.StatusOK, comments)
 	}
 }
+
+// DeleteComment supprime un commentaire.
+// DELETE /api/comments/{id}
+func DeleteComment(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+
+		res, err := db.Exec(`DELETE FROM comments WHERE id = ?`, id)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, "suppression du commentaire échouée")
+			return
+		}
+		rows, _ := res.RowsAffected()
+		if rows == 0 {
+			WriteError(w, http.StatusNotFound, "commentaire introuvable")
+			return
+		}
+
+		WriteJSON(w, http.StatusOK, map[string]string{"message": "commentaire supprimé"})
+	}
+}

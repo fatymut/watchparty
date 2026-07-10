@@ -50,6 +50,10 @@ func GenerateRecommendation(db *sql.DB) http.HandlerFunc {
 		id, _ := res.LastInsertId()
 		partyIDInt, _ := strconv.ParseInt(partyID, 10, 64)
 
+		// Le film recommandé devient le film choisi de la party : c'est lui que les
+		// participants pourront noter ensuite (fonctionnalité bonus, voir notation_controller.go).
+		db.Exec(`UPDATE watch_parties SET chosen_movie_id = ? WHERE id = ?`, movieID, partyID)
+
 		WriteJSON(w, http.StatusOK, models.Recommendation{
 			ID:           id,
 			WatchPartyID: partyIDInt,

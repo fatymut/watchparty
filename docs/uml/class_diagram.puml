@@ -12,6 +12,10 @@ class User {
   - email : string
   - passwordHash : string
   - createdAt : datetime
+  --
+  + register(username, email, password) : User
+  + login(email, password) : User
+  + addComment(partyId, content) : Comment
 }
 
 class WatchParty {
@@ -21,7 +25,14 @@ class WatchParty {
   - date : datetime
   - status : string
   - creatorId : int
+  - chosenMovieId : int
   - createdAt : datetime
+  --
+  + createParty(title, description, creatorId) : WatchParty
+  + addParticipant(userId) : Participant
+  + generateRecommendation() : Recommendation
+  + chooseMovie(movieId) : void
+  + closeParty() : void
 }
 
 class Movie {
@@ -52,6 +63,44 @@ class Recommendation {
   - createdAt : datetime
 }
 
+class Notation {
+  - id : int
+  - watchPartyId : int
+  - movieId : int
+  - userId : int
+  - rating : int  ' 1 à 5
+  - createdAt : datetime
+}
+
+class Participant {
+  - id : int
+  - watchPartyId : int
+  - userId : int
+  - role : string  ' "creator" ou "member"
+  - joinedAt : datetime
+  --
+  + addSwipe(movieId, value) : Swipe
+}
+
+class Invitation {
+  - id : int
+  - watchPartyId : int
+  - invitedEmail : string
+  - token : string
+  - status : string  ' "pending" ou "accepted"
+  - createdAt : datetime
+  --
+  + acceptInvitation(userId) : Participant
+}
+
+class Comment {
+  - id : int
+  - watchPartyId : int
+  - userId : int
+  - content : string
+  - createdAt : datetime
+}
+
 ' ----- Relations -----
 
 ' Un utilisateur peut créer plusieurs watch parties
@@ -62,15 +111,69 @@ User "1" --> "0..*" Swipe : effectue >
 Movie "1" --> "0..*" Swipe : reçoit >
 WatchParty "1" --> "0..*" Swipe : contient >
 
-' Une watch party aboutit à une ou plusieurs recommandations (historique),
-' chaque recommandation désigne un film gagnant
+' Une watch party aboutit à une ou plusieurs recommandations (historique) :
+' calcul automatique du film le plus liké, cœur du projet (cf. sujet)
 WatchParty "1" --> "0..*" Recommendation : génère >
 Movie "1" --> "0..*" Recommendation : est recommandé dans >
+
+' Une watch party choisit au plus un film (chosenMovieId, rempli automatiquement
+' par generateRecommendation(), ou manuellement via chooseMovie() en repli)
+WatchParty "0..*" --> "0..1" Movie : choisit >
+
+' Fonctionnalité bonus : le film choisi/recommandé reçoit une note de chaque participant
+WatchParty "1" --> "0..*" Notation : reçoit >
+Movie "1" --> "0..*" Notation : est noté dans >
+User "1" --> "0..*" Notation : note >
+
+' Participant relie User et WatchParty (relation many-to-many),
+' un utilisateur devient participant en créant une party ou en acceptant une invitation
+User "1" --> "0..*" Participant : participe via >
+WatchParty "1" --> "0..*" Participant : compte >
+
+' Une watch party peut envoyer plusieurs invitations par email
+WatchParty "1" --> "0..*" Invitation : envoie >
+
+' Les commentaires relient un utilisateur et une watch party
+User "1" --> "0..*" Comment : écrit >
+WatchParty "1" --> "0..*" Comment : reçoit >
+
+' Dépendance (pas une association permanente) :
+' acceptInvitation() crée un Participant, il ne le "possède" pas
+Invitation ..> Participant : crée >
 
 note bottom of Swipe
   Contrainte d'unicité :
   UNIQUE (userId, movieId, watchPartyId)
   => 1 seul swipe par user/film/party
+end note
+
+note bottom of Participant
+  Contrainte d'unicité :
+  UNIQUE (watchPartyId, userId)
+  => 1 seule participation par user/party
+end note
+
+note bottom of Invitation
+  Token généré avec crypto/rand
+  (aléatoire cryptographique, imprévisible).
+  status passe de "pending" à "accepted"
+  une fois utilisé (empêche la réutilisation).
+end note
+
+note bottom of Recommendation
+  likesCount = COUNT(*) des swipes "like"
+  pour le film gagnant (GROUP BY + ORDER BY).
+  Historisée à chaque génération, et met
+  aussi à jour WatchParty.chosenMovieId.
+end note
+
+note bottom of Notation
+  Contrainte d'unicité :
+  UNIQUE (watchPartyId, userId)
+  => 1 seule note par participant/party,
+  toujours sur le film choisi (chosenMovieId).
+  Fonctionnalité bonus, en plus de la
+  recommandation automatique du sujet.
 end note
 
 @enduml

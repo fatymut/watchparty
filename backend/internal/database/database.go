@@ -60,8 +60,10 @@ func Migrate(db *sql.DB) error {
 		date DATETIME NULL,
 		status VARCHAR(50) DEFAULT 'draft',
 		creator_id INT NULL,
+		chosen_movie_id INT NULL,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL
+		FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL,
+		FOREIGN KEY (chosen_movie_id) REFERENCES movies(id) ON DELETE SET NULL
 	);
 
 	CREATE TABLE IF NOT EXISTS swipes (
@@ -85,6 +87,19 @@ func Migrate(db *sql.DB) error {
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (watch_party_id) REFERENCES watch_parties(id) ON DELETE CASCADE,
 		FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
+	);
+
+	CREATE TABLE IF NOT EXISTS notations (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		watch_party_id INT NOT NULL,
+		movie_id INT NOT NULL,
+		user_id INT NOT NULL,
+		rating INT NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (watch_party_id) REFERENCES watch_parties(id) ON DELETE CASCADE,
+		FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+		UNIQUE KEY unique_notation (watch_party_id, user_id)
 	);
 
 	CREATE TABLE IF NOT EXISTS participants (
@@ -122,6 +137,30 @@ func Migrate(db *sql.DB) error {
 	_, err := db.Exec(query)
 	if err != nil {
 		return err
+	}
+
+	// Migration légère pour les bases déjà existantes (créées avant l'ajout de chosen_movie_id).
+	// CREATE TABLE IF NOT EXISTS ne modifie pas une table déjà existante ; MySQL ne supporte pas
+	// "ADD COLUMN IF NOT EXISTS" (contrairement à MariaDB), donc on vérifie nous-mêmes via
+	// information_schema avant d'altérer.
+	var columnExists int
+	err = db.QueryRow(
+		`SELECT COUNT(*) FROM information_schema.columns
+		 WHERE table_schema = DATABASE() AND table_name = 'watch_parties' AND column_name = 'chosen_movie_id'`,
+	).Scan(&columnExists)
+	if err != nil {
+		return err
+	}
+	if columnExists == 0 {
+		if _, err := db.Exec(`ALTER TABLE watch_parties ADD COLUMN chosen_movie_id INT NULL`); err != nil {
+			return err
+		}
+		if _, err := db.Exec(
+			`ALTER TABLE watch_parties ADD CONSTRAINT fk_watch_parties_chosen_movie
+			 FOREIGN KEY (chosen_movie_id) REFERENCES movies(id) ON DELETE SET NULL`,
+		); err != nil {
+			return err
+		}
 	}
 
 	log.Println("Tables créées ou déjà existantes")

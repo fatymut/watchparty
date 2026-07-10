@@ -29,6 +29,12 @@ else un gagnant existe
   DB --> Ctrl : movieId, likesCount
   Ctrl -> DB : INSERT INTO recommendations\n(watch_party_id, movie_id, likes_count)
   DB --> Ctrl : id de la recommandation
+  Ctrl -> DB : UPDATE watch_parties\nSET chosen_movie_id = movieId
+  note right of DB
+    Le film recommandé devient le film
+    choisi de la party (utile pour la
+    notation bonus, voir sequence_notation)
+  end note
   Ctrl --> Front : 200 OK {recommendation}
   Front --> User : affiche le film recommandé
 end

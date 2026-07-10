@@ -1,0 +1,72 @@
+@startuml WatchParty - Séquence : Noter le film choisi (fonctionnalité bonus)
+' Scénario : en plus de la recommandation automatique (voir sequence_recommendation.puml,
+' qui calcule le film le plus liké ET renseigne watch_parties.chosen_movie_id), le créateur
+' peut aussi désigner manuellement le film choisi. Dans les deux cas, chaque participant
+' peut ensuite lui donner une note de 1 à 5.
+' Endpoints : POST /api/parties/{id}/choose-movie  (repli manuel)
+'             POST /api/parties/{id}/notations
+'             GET  /api/parties/{id}/notations
+
+skinparam shadowing false
+autonumber
+
+actor "Créateur" as Owner
+actor "Participant" as User
+participant "Frontend\n(React)" as Front
+participant "Router\n(net/http)" as Router
+participant "ChooseMovie\n(controller)" as CtrlChoose
+participant "CreateNotation\n(controller)" as CtrlNote
+database "MySQL\n(watch_parties, notations)" as DB
+
+== 1. Choisir le film manuellement (repli, si pas de recommandation générée) ==
+
+Owner -> Front : désigne le film retenu\n(après les swipes)
+Front -> Router : POST /api/parties/1/choose-movie\n{movieId}
+Router -> CtrlChoose : route POST /parties/{id}/choose-movie
+
+CtrlChoose -> DB : UPDATE watch_parties\nSET chosen_movie_id = ?\nWHERE id = ?
+
+alt party introuvable
+  DB --> CtrlChoose : 0 ligne affectée
+  CtrlChoose --> Front : 404 Not Found {error}
+else film enregistré
+  DB --> CtrlChoose : OK
+  CtrlChoose --> Front : 200 OK {movieId}
+  Front --> Owner : film choisi confirmé pour tous
+end
+
+== 2. Noter le film choisi (répété par chaque participant) ==
+
+User -> Front : donne une note (1 à 5)\nau film choisi
+Front -> Router : POST /api/parties/1/notations\n{userId, rating}
+Router -> CtrlNote : route POST /parties/{id}/notations
+
+CtrlNote -> DB : SELECT chosen_movie_id\nFROM watch_parties WHERE id = ?
+
+alt aucun film choisi pour cette party
+  DB --> CtrlNote : chosen_movie_id = NULL
+  CtrlNote --> Front : 400 Bad Request {error}
+else rating hors de 1..5
+  CtrlNote --> Front : 400 Bad Request {error}
+else note valide
+  DB --> CtrlNote : movieId trouvé
+  CtrlNote -> DB : INSERT INTO notations\n(watch_party_id, movie_id, user_id, rating)\nON DUPLICATE KEY UPDATE rating = VALUES(rating)
+  note right of DB
+    Contrainte UNIQUE (watchPartyId, userId)
+    => un participant ne note qu'une fois
+    (re-noter met à jour sa note)
+  end note
+  DB --> CtrlNote : OK
+  CtrlNote --> Front : 201 Created {message}
+  Front --> User : note enregistrée
+end
+
+== 3. Consulter la moyenne (optionnel) ==
+
+Front -> Router : GET /api/parties/1/notations
+Router -> DB : SELECT rating FROM notations\nWHERE watch_party_id = ?
+DB --> Router : liste des notes
+Router --> Front : 200 OK {average, count, notations}
+Front --> User : affiche la note moyenne\ndu film choisi
+
+@enduml
