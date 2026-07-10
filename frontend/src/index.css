@@ -1,1 +1,33 @@
-@import "tailwindcss";
+/* Global dark theme for WatchParty */
+
+:root {
+  --color-bg: #0d0d0f;          /* deep charcoal/black background */
+  --color-surface: #1c1c1f;     /* dark gray cards */
+  --color-surface-hover: #26262a;
+  --color-border: #2e2e33;
+
+  --color-text: #f5f5f7;
+  --color-text-muted: #9a9aa2;
+
+  --color-like: #2ee56d;        /* neon green */
+  --color-dislike: #ff3b5c;     /* striking red */
+
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --radius: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
