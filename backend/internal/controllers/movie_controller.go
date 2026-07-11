@@ -40,6 +40,52 @@ func GetMovies(db *sql.DB) http.HandlerFunc {
 	}
 }
 
+// GetPartyMovies renvoie les films disponibles à swiper pour un participant dans une party
+// donnée : tous les films, sauf ceux que ce userId a déjà swipés dans cette party.
+// C'est ce que le frontend doit appeler pour construire le paquet de cartes, plutôt que
+// GET /api/movies (qui renvoie tout, sans filtrage, et sert plutôt à l'admin des films).
+// GET /api/parties/{id}/movies?userId=1
+func GetPartyMovies(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		partyID := r.PathValue("id")
+		userID := r.URL.Query().Get("userId")
+		if userID == "" {
+			WriteError(w, http.StatusBadRequest, "userId est obligatoire (query param)")
+			return
+		}
+
+		rows, err := db.Query(
+			`SELECT m.id, m.title, m.genre, m.duration, m.release_year, m.synopsis, m.poster_url, m.created_at
+			 FROM movies m
+			 WHERE m.id NOT IN (
+			   SELECT movie_id FROM swipes WHERE watch_party_id = ? AND user_id = ?
+			 )
+			 ORDER BY m.id`,
+			partyID, userID,
+		)
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, "erreur lecture films")
+			return
+		}
+		defer rows.Close()
+
+		movies := []models.Movie{}
+		for rows.Next() {
+			var m models.Movie
+			if err := rows.Scan(
+				&m.ID, &m.Title, &m.Genre, &m.Duration,
+				&m.ReleaseYear, &m.Synopsis, &m.PosterURL, &m.CreatedAt,
+			); err != nil {
+				WriteError(w, http.StatusInternalServerError, "erreur scan film")
+				return
+			}
+			movies = append(movies, m)
+		}
+
+		WriteJSON(w, http.StatusOK, movies)
+	}
+}
+
 // CreateMovie ajoute un film.
 // POST /api/movies
 func CreateMovie(db *sql.DB) http.HandlerFunc {

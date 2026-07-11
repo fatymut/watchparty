@@ -1,0 +1,61 @@
+@startuml WatchParty - Séquence : Lancement d'une session de swipe
+' Scénario métier central : une WatchParty passe en mode swipe.
+' Endpoints réels : POST /api/parties/{id}/start-swipe (protégée JWT, créateur uniquement)
+'                    GET  /api/parties/{id}/movies?userId= (films non encore swipés par cet user)
+' Entièrement implémenté côté backend (voir party_controller.go, movie_controller.go).
+
+skinparam shadowing false
+autonumber
+
+actor "Créateur" as Owner
+participant "Frontend\n(React)" as Front
+participant "Router\n(net/http)" as Router
+participant "StartSwipeSession\n(PartyController)" as PartyCtrl
+participant "GetPartyMovies\n(MovieController)" as MovieCtrl
+database "MySQL" as DB
+
+== 1. Lancer la session (créateur uniquement) ==
+
+Owner -> Front : ouvre le détail de sa WatchParty
+Owner -> Front : clique « Lancer le swipe »
+Front -> Router : POST /api/parties/{id}/start-swipe\nAuthorization: Bearer <token>
+Router -> PartyCtrl : route protégée (middlewares.RequireAuth)
+
+PartyCtrl -> PartyCtrl : extrait userId du token JWT\n(middlewares.UserIDFromContext)
+PartyCtrl -> DB : SELECT * FROM watch_parties WHERE id = ?
+
+alt WatchParty introuvable
+  DB --> PartyCtrl : 0 ligne (sql.ErrNoRows)
+  PartyCtrl --> Front : 404 Not Found {error}
+  Front --> Owner : "party introuvable"
+else userId du token != creatorId
+  DB --> PartyCtrl : party (creatorId, status, ...)
+  PartyCtrl --> Front : 403 Forbidden\n{error: "seul le créateur peut lancer la session de swipe"}
+  Front --> Owner : accès refusé
+else party déjà fermée
+  PartyCtrl --> Front : 409 Conflict {error}
+else créateur confirmé, party ouverte
+  PartyCtrl -> DB : UPDATE watch_parties\nSET status = 'active' WHERE id = ?
+  DB --> PartyCtrl : OK
+  PartyCtrl --> Front : 200 OK {status: "active"}
+
+  == 2. Récupérer le paquet de cartes (chaque participant) ==
+
+  Front -> Router : GET /api/parties/{id}/movies?userId={id}
+  Router -> MovieCtrl : route GetPartyMovies
+
+  MovieCtrl -> DB : SELECT * FROM movies\nWHERE id NOT IN (\n  SELECT movie_id FROM swipes\n  WHERE watch_party_id=? AND user_id=?\n)
+  note right of DB
+    Exclut uniquement les films déjà
+    swipés PAR CET utilisateur dans
+    cette party précise : deux
+    participants voient des paquets
+    différents selon leur progression.
+  end note
+  DB --> MovieCtrl : films restants
+  MovieCtrl --> Front : 200 OK [films]
+
+  Front --> Owner : affiche la première carte\nde film à swiper
+end
+
+@enduml

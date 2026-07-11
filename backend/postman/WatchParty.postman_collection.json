@@ -167,6 +167,43 @@
           }
         },
         {
+          "name": "Start Swipe Session sans token (401 attendu)",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/start-swipe", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "start-swipe"] }
+          }
+        },
+        {
+          "name": "Start Swipe Session avec token d'un non-createur (403 attendu)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/start-swipe", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "start-swipe"] }
+          }
+        },
+        {
+          "name": "Start Swipe Session avec le token du createur (200 attendu, coller le token de Login)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/start-swipe", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "start-swipe"] }
+          }
+        },
+        {
+          "name": "Get Party Movies (films restants pour userId)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/movies?userId={{userId}}", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "movies"], "query": [{ "key": "userId", "value": "{{userId}}" }] }
+          }
+        },
+        {
+          "name": "Get Party Movies sans userId (400 attendu)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/parties/{{partyId}}/movies", "host": ["{{baseUrl}}"], "path": ["api", "parties", "{{partyId}}", "movies"] }
+          }
+        },
+        {
           "name": "Close Party",
           "request": {
             "method": "POST",

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"watchparty/backend/internal/middlewares"
 	"watchparty/backend/internal/models"
 )
 
@@ -260,6 +261,54 @@ func CloseParty(db *sql.DB) http.HandlerFunc {
 		}
 
 		WriteJSON(w, http.StatusOK, map[string]string{"message": "party fermée", "status": "closed"})
+	}
+}
+
+// StartSwipeSession lance la session de swipe d'une watch party (status -> "active").
+// Réservé au créateur de la party : l'utilisateur est déduit du token JWT
+// (middlewares.RequireAuth), pas d'un champ envoyé par le client.
+// POST /api/parties/{id}/start-swipe (route protégée)
+func StartSwipeSession(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		partyID := r.PathValue("id")
+
+		userID, ok := middlewares.UserIDFromContext(r.Context())
+		if !ok {
+			WriteError(w, http.StatusUnauthorized, "non authentifié")
+			return
+		}
+
+		row := db.QueryRow(
+			`SELECT id, title, description, date, status, creator_id, chosen_movie_id, created_at
+			 FROM watch_parties
+			 WHERE id = ?`,
+			partyID,
+		)
+		p, err := scanParty(row)
+		if err == sql.ErrNoRows {
+			WriteError(w, http.StatusNotFound, "party introuvable")
+			return
+		}
+		if err != nil {
+			WriteError(w, http.StatusInternalServerError, "erreur lecture party")
+			return
+		}
+
+		if p.CreatorID != userID {
+			WriteError(w, http.StatusForbidden, "seul le créateur peut lancer la session de swipe")
+			return
+		}
+		if p.Status == "closed" {
+			WriteError(w, http.StatusConflict, "cette party est fermée, impossible de lancer le swipe")
+			return
+		}
+
+		if _, err := db.Exec(`UPDATE watch_parties SET status = 'active' WHERE id = ?`, partyID); err != nil {
+			WriteError(w, http.StatusInternalServerError, "lancement de la session échoué")
+			return
+		}
+
+		WriteJSON(w, http.StatusOK, map[string]string{"message": "session de swipe lancée", "status": "active"})
 	}
 }
 

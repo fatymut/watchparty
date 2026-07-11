@@ -1,7 +1,7 @@
 # Rapport — Partie Backend (Amel)
 
 > Brouillon à reformuler et intégrer dans le rapport global du groupe.
-> Diagrammes associés : `docs/uml/class_diagram.puml`, `sequence_swipe.puml`, `sequence_recommendation.puml`, `sequence_notation.puml`, `sequence_join_party.puml`, `object_diagram_recommendation.puml`.
+> Diagrammes associés : `docs/uml/class_diagram.puml`, `sequence_lancer_swipe.puml`, `sequence_swipe.puml`, `sequence_recommendation.puml`, `sequence_notation.puml`, `sequence_join_party.puml`, `object_diagram_recommendation.puml`.
 
 ## 1. Rôle du backend dans le projet
 
@@ -55,7 +55,13 @@ Les relations sont matérialisées par des **clés étrangères** en base, ce qu
 
 ## 5. Fonctionnalité cœur : du swipe à la recommandation
 
-### 5.1 Enregistrer un swipe (voir séquence « swipe »)
+### 5.1 Lancer la session de swipe (créateur uniquement, voir séquence « lancer_swipe »)
+
+Avant de swiper, le créateur lance la session via `POST /api/parties/{id}/start-swipe` — route **protégée par JWT** (`middlewares.RequireAuth`). Le controller extrait l'id de l'utilisateur depuis le token (pas depuis le corps de la requête, contrairement au reste de l'API), le compare au `creatorId` de la party, et refuse avec `403` si ce n'est pas le créateur. La party passe alors en `status = 'active'`.
+
+Chaque participant récupère ensuite son propre paquet de cartes via `GET /api/parties/{id}/movies?userId=`, qui exclut les films **déjà swipés par cet utilisateur précis** dans cette party (sous-requête `NOT IN` sur `swipes`). Deux participants voient donc des paquets différents selon leur progression individuelle — contrairement à `GET /api/movies`, qui reste la route générique (non filtrée) utilisée pour l'administration des films.
+
+### 5.2 Enregistrer un swipe (voir séquence « swipe »)
 
 Quand un participant swipe, le frontend envoie `POST /api/parties/{id}/swipes` avec `userId`, `movieId` et `value`. Le controller valide les données puis exécute :
 
@@ -67,7 +73,7 @@ ON DUPLICATE KEY UPDATE value = VALUES(value);
 
 Grâce à la contrainte `UNIQUE (user_id, movie_id, watch_party_id)`, si l'utilisateur swipe deux fois le même film, son choix est **mis à jour** au lieu de créer un doublon.
 
-### 5.2 Calculer le film le plus aimé (voir séquence « recommandation » et diagramme d'objets « object_diagram_recommendation »)
+### 5.3 Calculer le film le plus aimé (voir séquence « recommandation » et diagramme d'objets « object_diagram_recommendation »)
 
 L'algorithme de recommandation tient en **une seule requête SQL** : on compte les `like` par film pour la party, et on garde celui qui en a le plus — exactement l'exemple du sujet (Interstellar / Inception / Titanic).
 
@@ -80,9 +86,9 @@ ORDER BY likes DESC, movie_id ASC
 LIMIT 1;
 ```
 
-Le résultat est enregistré dans `recommendations` (historique), puis renvoyé au frontend qui affiche le film recommandé. Ce même appel met aussi à jour `watch_parties.chosen_movie_id`, pour que la notation bonus (5.3) sache quel film noter.
+Le résultat est enregistré dans `recommendations` (historique), puis renvoyé au frontend qui affiche le film recommandé. Ce même appel met aussi à jour `watch_parties.chosen_movie_id`, pour que la notation bonus (5.4) sache quel film noter.
 
-### 5.3 Noter le film choisi *(fonctionnalité bonus, voir séquence « notation »)*
+### 5.4 Noter le film choisi *(fonctionnalité bonus, voir séquence « notation »)*
 
 En plus de la recommandation automatique demandée par le sujet, chaque participant peut donner une note manuelle de 1 à 5 au film choisi :
 
@@ -97,7 +103,7 @@ ON DUPLICATE KEY UPDATE rating = VALUES(rating);
 
 Grâce à la contrainte `UNIQUE (watch_party_id, user_id)`, un participant qui note deux fois **met à jour** sa note au lieu d'en créer une deuxième. `GET /api/parties/{id}/notations` renvoie la liste des notes ainsi que leur moyenne, calculée côté Go (pas en SQL) pour rester simple.
 
-### 5.4 Rejoindre une party (participants et invitations, voir séquence « join_party »)
+### 5.5 Rejoindre une party (participants et invitations, voir séquence « join_party »)
 
 Deux façons de devenir participant d'une party :
 
@@ -106,7 +112,7 @@ Deux façons de devenir participant d'une party :
 
 La contrainte `UNIQUE (watch_party_id, user_id)` sur `participants` empêche un utilisateur de rejoindre deux fois la même party.
 
-### 5.5 Authentification par token (JWT)
+### 5.6 Authentification par token (JWT)
 
 `register` et `login` génèrent désormais un **token JWT** (HMAC-SHA256, `internal/auth/jwt.go`, valable 24h). Le middleware `middlewares.RequireAuth` vérifie le header `Authorization: Bearer <token>`, valide le token et injecte l'id de l'utilisateur dans le contexte de la requête. Une route protégée l'utilise pour l'instant : `GET /api/me`.
 
@@ -121,11 +127,12 @@ La contrainte `UNIQUE (watch_party_id, user_id)` sur `participants` empêche un 
 - **Token d'invitation** généré avec `crypto/rand` (aléatoire cryptographique) et invalidé après usage (`status = accepted`).
 - **Notation bornée** : `rating` validé entre 1 et 5, et systématiquement rattachée au `chosen_movie_id` de la party (jamais un film au choix du client) grâce à une relecture serveur avant insertion.
 - **JWT** signé HMAC-SHA256, expiration 24h, secret configurable via `JWT_SECRET`.
+- **Autorisation par ownership** : `POST /api/parties/{id}/start-swipe` compare le `userId` du token JWT au `creatorId` de la party (`403` sinon) — première route où l'identité vient du token et non d'un champ envoyé par le client, donc non falsifiable.
 
 ## 7. Tests
 
 L'API a été testée avec **Postman** (collection fournie dans `backend/postman/`). Scénario complet validé :
-`health → register/login → création d'une party (créateur auto-participant) → ajout d'un participant → invitation puis acceptation → plusieurs swipes → génération de la recommandation (met aussi à jour le film choisi) → lecture de la recommandation → notation par plusieurs participants → lecture de la moyenne → ajout d'un commentaire`, ainsi que les cas d'erreur (mauvais mot de passe, email déjà utilisé, participant en doublon, invitation déjà utilisée, party sans like, notation sans film choisi, note hors de l'intervalle 1-5).
+`health → register/login → création d'une party (créateur auto-participant) → ajout d'un participant → invitation puis acceptation → lancement de la session de swipe (créateur) → lecture des films restants par utilisateur → plusieurs swipes → génération de la recommandation (met aussi à jour le film choisi) → lecture de la recommandation → notation par plusieurs participants → lecture de la moyenne → ajout d'un commentaire`, ainsi que les cas d'erreur (mauvais mot de passe, email déjà utilisé, participant en doublon, invitation déjà utilisée, party sans like, notation sans film choisi, note hors de l'intervalle 1-5, lancement de session par un non-créateur).
 
 ## 8. Liste des endpoints
 
@@ -142,6 +149,8 @@ L'API a été testée avec **Postman** (collection fournie dans `backend/postman
 | GET  | `/api/parties/{id}` | Détail d'une party |
 | PUT / DELETE | `/api/parties/{id}` | Modifier / supprimer une party |
 | POST | `/api/parties/{id}/close` | Fermer une party (`status` → `closed`) |
+| POST | `/api/parties/{id}/start-swipe` | 🔒 Lancer la session de swipe (créateur uniquement) |
+| GET  | `/api/parties/{id}/movies?userId=` | Films restants à swiper pour cet utilisateur |
 | GET / POST | `/api/parties/{id}/participants` | Lister / ajouter des participants |
 | POST | `/api/parties/{id}/invitations` | Inviter un email à rejoindre une party |
 | POST | `/api/invitations/{token}/accept` | Accepter une invitation |

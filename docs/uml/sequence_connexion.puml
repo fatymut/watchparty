@@ -1,0 +1,46 @@
+@startuml WatchParty - Séquence : Connexion d'un utilisateur
+' Scénario : un utilisateur se connecte avec email + mot de passe.
+' Endpoint : POST /api/login
+' Fidèle à l'implémentation réelle (backend/internal/controllers/user_controller.go)
+
+skinparam shadowing false
+autonumber
+
+actor "Utilisateur" as User
+participant "Frontend\n(React)" as Front
+participant "Router\n(net/http)" as Router
+participant "Login\n(AuthController)" as Ctrl
+database "MySQL\n(table users)" as DB
+
+User -> Front : saisit email + mot de passe
+Front -> Router : POST /api/login\n{email, password}
+Router -> Ctrl : route POST /login
+
+Ctrl -> DB : SELECT id, username, email,\npassword_hash FROM users\nWHERE email = ?
+
+alt email inconnu
+  DB --> Ctrl : 0 ligne (sql.ErrNoRows)
+  Ctrl --> Front : 401 Unauthorized\n{error: "email ou mot de passe incorrect"}
+  Front --> User : affiche l'erreur
+else email trouvé
+  DB --> Ctrl : utilisateur + password_hash
+
+  Ctrl -> Ctrl : bcrypt.CompareHashAndPassword\n(password_hash, password)
+
+  alt mot de passe incorrect (ou champ vide)
+    Ctrl --> Front : 401 Unauthorized\n{error: "email ou mot de passe incorrect"}
+    Front --> User : affiche l'erreur
+    note right of Ctrl
+      Volontairement le même message que
+      "email inconnu" : on ne révèle jamais
+      lequel des deux est faux (bonne pratique
+      de sécurité, évite l'énumération de comptes).
+    end note
+  else identifiants valides
+    Ctrl -> Ctrl : auth.GenerateToken(userId)\n(JWT HMAC-SHA256, 24h)
+    Ctrl --> Front : 200 OK {id, username, email, token}
+    Front --> User : connecté, token stocké côté client
+  end
+end
+
+@enduml

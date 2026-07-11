@@ -37,6 +37,8 @@ func New(db *sql.DB) http.Handler {
 	mux.HandleFunc("DELETE /api/parties/{id}", controllers.DeleteParty(db))
 	mux.HandleFunc("POST /api/parties/{id}/close", controllers.CloseParty(db))
 	mux.HandleFunc("POST /api/parties/{id}/choose-movie", controllers.ChooseMovie(db))
+	mux.HandleFunc("POST /api/parties/{id}/start-swipe", middlewares.RequireAuth(controllers.StartSwipeSession(db)))
+	mux.HandleFunc("GET /api/parties/{id}/movies", controllers.GetPartyMovies(db))
 
 	// Participants
 	mux.HandleFunc("POST /api/parties/{id}/participants", controllers.CreateParticipant(db))

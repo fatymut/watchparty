@@ -93,6 +93,8 @@ internal/
 | PUT  | `/api/parties/{id}` | Modifier une watch party |
 | DELETE | `/api/parties/{id}` | Supprimer une watch party (cascade) |
 | POST | `/api/parties/{id}/close` | Fermer une watch party (`status` → `closed`) |
+| POST | `/api/parties/{id}/start-swipe` | 🔒 Lancer la session de swipe (créateur uniquement, `status` → `active`) |
+| GET  | `/api/parties/{id}/movies?userId=` | Films restants à swiper pour cet utilisateur dans cette party |
 | POST | `/api/parties/{id}/swipes` | Enregistrer un swipe (`like`/`dislike`) |
 | GET  | `/api/parties/{id}/swipes` | Lister les swipes d'une party |
 | POST | `/api/parties/{id}/recommendation/generate` | Calculer le film le plus liké |
@@ -182,7 +184,7 @@ En plus de la recommandation automatique, chaque participant peut donner une **n
 Authorization: Bearer <token>
 ```
 
-Pour l'instant, une seule route est protégée : `GET /api/me` (via `middlewares.RequireAuth`). **Choix assumé** : les autres routes (`swipes`, `parties`, `comments`, etc.) ne sont pas verrouillées derrière le token, elles continuent de recevoir `userId` explicitement dans le corps de la requête. Verrouiller toutes les routes aurait cassé l'intégration déjà fonctionnelle avec le frontend (qui n'envoie pas encore le header `Authorization`) à quelques jours de la soutenance. `RequireAuth` est réutilisable pour protéger d'autres routes plus tard si besoin (`middlewares.RequireAuth(monHandler)`).
+Deux routes sont protégées : `GET /api/me` et `POST /api/parties/{id}/start-swipe` (via `middlewares.RequireAuth`). Cette dernière compare l'id du token au `creatorId` de la party : seul le créateur peut lancer la session de swipe (`403` sinon). **Choix assumé** : les autres routes (`swipes`, `comments`, etc.) ne sont pas verrouillées derrière le token, elles continuent de recevoir `userId` explicitement dans le corps de la requête. Verrouiller systématiquement toutes les routes aurait cassé l'intégration déjà fonctionnelle avec le frontend (qui n'envoie pas encore le header `Authorization`) à quelques jours de la soutenance. `RequireAuth` est réutilisable pour protéger d'autres routes plus tard si besoin (`middlewares.RequireAuth(monHandler)`).
 
 ## Sécurité
 
