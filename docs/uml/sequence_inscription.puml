@@ -13,8 +13,8 @@ participant "Register\n(AuthController)" as Ctrl
 database "MySQL\n(table users)" as DB
 
 User -> Front : remplit le formulaire\n(username, email, password)
-Front -> Router : POST /api/register\n{username, email, password}
-Router -> Ctrl : route POST /register
+Front -> Router : register(username, email, password)
+Router -> Ctrl : Register(username, email, password)
 
 Ctrl -> Ctrl : décode le JSON\n+ trim username/email
 
@@ -29,7 +29,7 @@ else champs valides
     stocké en clair.
   end note
 
-  Ctrl -> DB : INSERT INTO users\n(username, email, password_hash)
+  Ctrl -> DB : insertUser(username, email, passwordHash)
 
   alt email déjà utilisé (contrainte UNIQUE)
     DB --> Ctrl : erreur "Duplicate"

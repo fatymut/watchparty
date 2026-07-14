@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" version="24.7.5">
   <diagram name="WatchParty - Sequence Lancer Swipe" id="WatchParty_-_Sequence_Lancer_Swipe">
-    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1450" pageHeight="1436" math="0" shadow="0">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1450" pageHeight="1601" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -22,7 +22,7 @@
 <mxCell id="n16" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="755.0" y="307" width="10" height="35" as="geometry" /></mxCell>
 <mxCell id="n17" value="findPartyById(id)" style="html=1;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="355" as="sourcePoint" /><mxPoint x="1220" y="355" as="targetPoint" /></mxGeometry></mxCell>
 <mxCell id="n18" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1215.0" y="352" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n19" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;fontSize=10;align=left;verticalAlign=top;width=70;height=22;" vertex="1" parent="1"><mxGeometry x="60" y="400" width="1300" height="976" as="geometry" /></mxCell>
+<mxCell id="n19" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;fontSize=10;align=left;verticalAlign=top;width=70;height=22;" vertex="1" parent="1"><mxGeometry x="60" y="400" width="1300" height="1141" as="geometry" /></mxCell>
 <mxCell id="n20" value="[WatchParty introuvable]" style="text;html=1;fontStyle=2;fontSize=9;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="66" y="432" width="400" height="16" as="geometry" /></mxCell>
 <mxCell id="n21" value="0 ligne (sql.ErrNoRows)" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1220" y="450" as="sourcePoint" /><mxPoint x="760" y="450" as="targetPoint" /></mxGeometry></mxCell>
 <mxCell id="n22" value="404 Not Found {error}" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="495" as="sourcePoint" /><mxPoint x="320" y="495" as="targetPoint" /></mxGeometry></mxCell>
@@ -51,12 +51,16 @@
 <mxCell id="n45" value="films restants" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1220" y="1226" as="sourcePoint" /><mxPoint x="980" y="1226" as="targetPoint" /></mxGeometry></mxCell>
 <mxCell id="n46" value="200 OK [films]" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="1271" as="sourcePoint" /><mxPoint x="320" y="1271" as="targetPoint" /></mxGeometry></mxCell>
 <mxCell id="n47" value="affiche la premiere carte de film a swiper" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="320" y="1316" as="sourcePoint" /><mxPoint x="100" y="1316" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n48" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="100" y="80" as="sourcePoint" /><mxPoint x="100" y="1396" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n49" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="320" y="80" as="sourcePoint" /><mxPoint x="320" y="1396" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n50" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="540" y="80" as="sourcePoint" /><mxPoint x="540" y="1396" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n51" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="80" as="sourcePoint" /><mxPoint x="760" y="1396" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n52" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="80" as="sourcePoint" /><mxPoint x="980" y="1396" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n53" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1220" y="80" as="sourcePoint" /><mxPoint x="1220" y="1396" as="targetPoint" /></mxGeometry></mxCell>
+<mxCell id="n48" value="ref" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontSize=10;align=left;verticalAlign=top;width=50;height=20;" vertex="1" parent="1"><mxGeometry x="120" y="1376" width="1180" height="55" as="geometry" /></mxCell>
+<mxCell id="n49" value="Swipe d&#x27;un film (voir sequence_swipe.puml)&#10;Chaque participant swipe son paquet, carte apres carte" style="text;html=1;fontSize=10;align=center;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="140" y="1392" width="1140" height="35" as="geometry" /></mxCell>
+<mxCell id="n50" value="ref" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontSize=10;align=left;verticalAlign=top;width=50;height=20;" vertex="1" parent="1"><mxGeometry x="120" y="1451" width="1180" height="55" as="geometry" /></mxCell>
+<mxCell id="n51" value="Generation de la recommandation (voir sequence_recommendation.puml)&#10;Une fois les swipes termines, calcul du film le plus aime" style="text;html=1;fontSize=10;align=center;verticalAlign=middle;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="140" y="1467" width="1140" height="35" as="geometry" /></mxCell>
+<mxCell id="n52" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="100" y="80" as="sourcePoint" /><mxPoint x="100" y="1561" as="targetPoint" /></mxGeometry></mxCell>
+<mxCell id="n53" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="320" y="80" as="sourcePoint" /><mxPoint x="320" y="1561" as="targetPoint" /></mxGeometry></mxCell>
+<mxCell id="n54" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="540" y="80" as="sourcePoint" /><mxPoint x="540" y="1561" as="targetPoint" /></mxGeometry></mxCell>
+<mxCell id="n55" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="80" as="sourcePoint" /><mxPoint x="760" y="1561" as="targetPoint" /></mxGeometry></mxCell>
+<mxCell id="n56" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="80" as="sourcePoint" /><mxPoint x="980" y="1561" as="targetPoint" /></mxGeometry></mxCell>
+<mxCell id="n57" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1220" y="80" as="sourcePoint" /><mxPoint x="1220" y="1561" as="targetPoint" /></mxGeometry></mxCell>
       </root>
     </mxGraphModel>
   </diagram>

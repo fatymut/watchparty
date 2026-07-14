@@ -1,0 +1,62 @@
+@startuml WatchParty - Diagramme d'objets : avant/après un swipe
+' Scénario concret : un participant swipe un film qu'il n'avait encore jamais
+' swipé dans cette party. Montre l'état des instances avant et après l'appel
+' à POST /api/parties/{id}/swipes (voir sequence_swipe.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT le swipe" {
+  object "user1 : User" as user1before {
+    id = 1
+    username = "demo"
+  }
+  object "movie4 : Movie" as movie4before {
+    id = 4
+    title = "Interstellar"
+  }
+  object "party5 : WatchParty" as party5before {
+    id = 5
+    status = "active"
+  }
+
+  note bottom of party5before
+    Aucun Swipe n'existe encore pour
+    le triplet (user1, movie4, party5).
+  end note
+}
+
+package "APRÈS le swipe" {
+  object "user1 : User" as user1after {
+    id = 1
+    username = "demo"
+  }
+  object "movie4 : Movie" as movie4after {
+    id = 4
+    title = "Interstellar"
+  }
+  object "party5 : WatchParty" as party5after {
+    id = 5
+    status = "active"
+  }
+  object "swipe1 : Swipe" as swipe1 {
+    id = 12
+    userId = 1
+    movieId = 4
+    watchPartyId = 5
+    value = "like"
+  }
+
+  user1after ..> swipe1 : effectue
+  movie4after ..> swipe1 : reçoit
+  party5after ..> swipe1 : contient
+
+  note bottom of swipe1
+    Contrainte UNIQUE (userId, movieId, watchPartyId) :
+    un deuxième swipe du même user sur le même film
+    dans la même party MET À JOUR ce même objet
+    (upsertSwipe), n'en crée pas un second.
+  end note
+}
+
+@enduml

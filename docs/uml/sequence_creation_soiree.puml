@@ -1,0 +1,41 @@
+@startuml WatchParty - Séquence : Création d'une soirée WatchParty
+' Scénario officiel du sujet (section 10, responsable conseillé : Faty).
+' Fidèle à l'implémentation réelle (backend/internal/controllers/party_controller.go).
+' Endpoint : POST /api/parties
+
+skinparam shadowing false
+autonumber
+
+actor "Utilisateur connecté" as User
+participant "Frontend\n(React)" as Front
+participant "Router\n(net/http)" as Router
+participant "CreateParty\n(controller)" as Ctrl
+database "MySQL\n(watch_parties, participants)" as DB
+
+User -> Front : remplit le formulaire\n(titre, description, date)
+Front -> Router : createParty(title, description, creatorId)
+Router -> Ctrl : CreateParty(title, description, creatorId)
+
+Ctrl -> Ctrl : décode le JSON\n+ valide (titre obligatoire)
+
+alt titre manquant
+  Ctrl --> Front : 400 Bad Request {error}
+  Front --> User : affiche l'erreur de validation
+else titre valide
+  Ctrl -> DB : insertWatchParty(title, description, date, creatorId)
+  DB --> Ctrl : id de la nouvelle party
+
+  Ctrl -> DB : insertParticipant(partyId, creatorId, "creator")
+  note right of DB
+    Le créateur devient automatiquement
+    participant de sa propre party
+    (role = "creator"), pas besoin
+    d'une invitation pour lui-même.
+  end note
+  DB --> Ctrl : OK
+
+  Ctrl --> Front : 201 Created {id, title, status: "draft"}
+  Front --> User : soirée créée, redirection\nvers le détail de la party
+end
+
+@enduml

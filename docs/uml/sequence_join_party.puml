@@ -18,8 +18,8 @@ database "MySQL\n(invitations, participants)" as DB
 == 1. Créer l'invitation ==
 
 Owner -> Front : invite un ami par email
-Front -> Router : POST /api/parties/1/invitations\n{email}
-Router -> CtrlInv : route POST /parties/{id}/invitations
+Front -> Router : inviteParticipant(partyId, email)
+Router -> CtrlInv : CreateInvitation(partyId, email)
 
 CtrlInv -> CtrlInv : décode le JSON\n+ valide (email requis)
 CtrlInv -> CtrlInv : generateToken()\n(crypto/rand, 32 caractères hex)
@@ -28,7 +28,7 @@ note right of CtrlInv
   imprévisible (pas math/rand)
 end note
 
-CtrlInv -> DB : INSERT INTO invitations\n(watch_party_id, invited_email, token, status='pending')
+CtrlInv -> DB : insertInvitation(partyId, email, token)
 DB --> CtrlInv : id de l'invitation
 CtrlInv --> Front : 201 Created {token, status: "pending"}
 Front --> Owner : lien d'invitation généré\n(ex: /invite/{token})
@@ -38,10 +38,10 @@ Owner -> Guest : partage le lien / token\n(email, message... hors périmètre AP
 == 2. Accepter l'invitation ==
 
 Guest -> Front : ouvre le lien, se connecte,\nclique « Rejoindre »
-Front -> Router : POST /api/invitations/{token}/accept\n{userId}
-Router -> CtrlAccept : route POST /invitations/{token}/accept
+Front -> Router : acceptInvitation(token, userId)
+Router -> CtrlAccept : AcceptInvitation(token, userId)
 
-CtrlAccept -> DB : SELECT * FROM invitations WHERE token=?
+CtrlAccept -> DB : findInvitationByToken(token)
 
 alt token introuvable
   DB --> CtrlAccept : 0 ligne (sql.ErrNoRows)
@@ -51,12 +51,12 @@ else invitation déjà utilisée
   CtrlAccept --> Front : 409 Conflict {error}
 else invitation valide (status = 'pending')
   DB --> CtrlAccept : invitation trouvée
-  CtrlAccept -> DB : INSERT INTO participants\n(watch_party_id, user_id, role='member')
+  CtrlAccept -> DB : insertParticipant(partyId, userId, "member")
   note right of DB
     Contrainte UNIQUE (watchPartyId, userId)
     => ignorée si déjà participant
   end note
-  CtrlAccept -> DB : UPDATE invitations\nSET status='accepted'
+  CtrlAccept -> DB : updateInvitationStatus(invitationId, "accepted")
   DB --> CtrlAccept : OK
   CtrlAccept --> Front : 200 OK {message}
   Front --> Guest : redirigé vers la watch party,\nmaintenant participant

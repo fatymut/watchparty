@@ -1,43 +1,182 @@
-<mxfile host="app.diagrams.net" version="24.7.5">
-  <diagram name="WatchParty - Sequence Swipe" id="WatchParty_-_Sequence_Swipe">
-    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="807" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-<mxCell id="n1" value="Participant" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;" vertex="1" parent="1"><mxGeometry x="85" y="30" width="30" height="50" as="geometry" /></mxCell>
-<mxCell id="n2" value="Frontend&#10;(React)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" vertex="1" parent="1"><mxGeometry x="240.0" y="40" width="160" height="40" as="geometry" /></mxCell>
-<mxCell id="n3" value="Middleware&#10;CORS" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" vertex="1" parent="1"><mxGeometry x="460.0" y="40" width="160" height="40" as="geometry" /></mxCell>
-<mxCell id="n4" value="Router&#10;(net/http)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" vertex="1" parent="1"><mxGeometry x="680.0" y="40" width="160" height="40" as="geometry" /></mxCell>
-<mxCell id="n5" value="CreateSwipe&#10;(controller)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" vertex="1" parent="1"><mxGeometry x="900.0" y="40" width="160" height="40" as="geometry" /></mxCell>
-<mxCell id="n6" value="MySQL&#10;(table swipes)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" vertex="1" parent="1"><mxGeometry x="1120.0" y="40" width="160" height="40" as="geometry" /></mxCell>
-<mxCell id="n7" value="swipe a droite / a gauche" style="html=1;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="100" y="130" as="sourcePoint" /><mxPoint x="320" y="130" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n8" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="315.0" y="127" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n9" value="swipe(partyId, userId, movieId, value)" style="html=1;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="320" y="175" as="sourcePoint" /><mxPoint x="540" y="175" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n10" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="535.0" y="172" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n11" value="requete autorisee (CORS OK)" style="html=1;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="540" y="220" as="sourcePoint" /><mxPoint x="760" y="220" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n12" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="755.0" y="217" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n13" value="CreateSwipe(partyId, userId, movieId, value)" style="html=1;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="265" as="sourcePoint" /><mxPoint x="980" y="265" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n14" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="975.0" y="262" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n15" value="decode le JSON + valide (value = like/dislike)" style="html=1;endArrow=block;endFill=1;fontSize=10;rounded=0;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="310" as="sourcePoint" /><mxPoint x="1040" y="310" as="targetPoint" /><Array as="points"><mxPoint x="1040" y="295" /></Array></mxGeometry></mxCell>
-<mxCell id="n16" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="975.0" y="307" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n17" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;fontSize=10;align=left;verticalAlign=top;width=70;height=22;" vertex="1" parent="1"><mxGeometry x="60" y="355" width="1280" height="347" as="geometry" /></mxCell>
-<mxCell id="n18" value="[donnees invalides]" style="text;html=1;fontStyle=2;fontSize=9;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="66" y="387" width="400" height="16" as="geometry" /></mxCell>
-<mxCell id="n19" value="400 Bad Request {error}" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="405" as="sourcePoint" /><mxPoint x="320" y="405" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n20" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#666666;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="60" y="450" as="sourcePoint" /><mxPoint x="1340" y="450" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n21" value="[donnees valides]" style="text;html=1;fontStyle=2;fontSize=9;align=left;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="66" y="452" width="1268" height="16" as="geometry" /></mxCell>
-<mxCell id="n22" value="upsertSwipe(userId, movieId, partyId, value)" style="html=1;endArrow=block;endFill=1;fontSize=10;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="482" as="sourcePoint" /><mxPoint x="1200" y="482" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n23" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1"><mxGeometry x="1195.0" y="479" width="10" height="35" as="geometry" /></mxCell>
-<mxCell id="n24" value="La contrainte UNIQUE&#10;(userId, movieId, watchPartyId)&#10;transforme un re-swipe&#10;en mise a jour" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=9;" vertex="1" parent="1"><mxGeometry x="1110" y="527" width="260" height="55" as="geometry" /></mxCell>
-<mxCell id="n25" value="OK" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1200" y="597" as="sourcePoint" /><mxPoint x="980" y="597" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n26" value="201 Created {message}" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="642" as="sourcePoint" /><mxPoint x="320" y="642" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n27" value="carte suivante affichee" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="320" y="702" as="sourcePoint" /><mxPoint x="100" y="702" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n28" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="100" y="80" as="sourcePoint" /><mxPoint x="100" y="767" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n29" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="320" y="80" as="sourcePoint" /><mxPoint x="320" y="767" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n30" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="540" y="80" as="sourcePoint" /><mxPoint x="540" y="767" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n31" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="760" y="80" as="sourcePoint" /><mxPoint x="760" y="767" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n32" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="980" y="80" as="sourcePoint" /><mxPoint x="980" y="767" as="targetPoint" /></mxGeometry></mxCell>
-<mxCell id="n33" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1200" y="80" as="sourcePoint" /><mxPoint x="1200" y="767" as="targetPoint" /></mxGeometry></mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile host="65bd71144e">
+    <diagram name="WatchParty - Sequence Swipe" id="WatchParty_-_Sequence_Swipe">
+        <mxGraphModel dx="766" dy="564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="962" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="n1" value="Participant" style="shape=umlActor;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="85" y="30" width="30" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="n2" value="Frontend&#xa;(React)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="40" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="n3" value="Middleware&#xa;CORS" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="40" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="n4" value="Router&#xa;(net/http)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="40" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="n5" value="CreateSwipe&#xa;(controller)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="40" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="n6" value="MySQL&#xa;(table swipes)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=11;fontStyle=4;" parent="1" vertex="1">
+                    <mxGeometry x="1120" y="40" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="n7" value="affiche la premiere carte du paquet" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="130" as="sourcePoint"/>
+                        <mxPoint x="100" y="130" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n8" value="loop" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;fontSize=10;align=left;verticalAlign=top;width=60;height=22;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="175" width="1280" height="682" as="geometry"/>
+                </mxCell>
+                <mxCell id="n9" value="[tant qu&#39;il reste des films a swiper dans le paquet]" style="text;html=1;fontStyle=2;fontSize=9;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="66" y="207" width="400" height="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="n10" value="swipe a droite / a gauche" style="html=1;endArrow=block;endFill=1;fontSize=10;" parent="1" edge="1">
+                    <mxGeometry x="-0.2727" y="-15" relative="1" as="geometry">
+                        <mxPoint x="100" y="225" as="sourcePoint"/>
+                        <mxPoint x="320" y="225" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n11" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="315" y="222" width="10" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="n12" value="swipe(partyId, userId, movieId, value)" style="html=1;endArrow=block;endFill=1;fontSize=10;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="270" as="sourcePoint"/>
+                        <mxPoint x="540" y="270" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n13" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="535" y="267" width="10" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="n14" value="requete autorisee (CORS OK)" style="html=1;endArrow=block;endFill=1;fontSize=10;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="315" as="sourcePoint"/>
+                        <mxPoint x="760" y="315" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n15" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="755" y="312" width="10" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="n16" value="CreateSwipe(partyId, userId, movieId, value)" style="html=1;endArrow=block;endFill=1;fontSize=10;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="760" y="360" as="sourcePoint"/>
+                        <mxPoint x="980" y="360" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n17" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="975" y="357" width="10" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="n18" value="decode le JSON + valide (value = like/dislike)" style="html=1;endArrow=block;endFill=1;fontSize=10;rounded=0;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="980" y="405" as="sourcePoint"/>
+                        <mxPoint x="1040" y="405" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1040" y="390"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n19" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="975" y="402" width="10" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="n20" value="alt" style="shape=umlFrame;whiteSpace=wrap;html=1;fillColor=none;fontSize=10;align=left;verticalAlign=top;width=70;height=22;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="450" width="1180" height="347" as="geometry"/>
+                </mxCell>
+                <mxCell id="n21" value="[donnees invalides]" style="text;html=1;fontStyle=2;fontSize=9;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="126" y="482" width="400" height="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="n22" value="400 Bad Request {error}" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="980" y="500" as="sourcePoint"/>
+                        <mxPoint x="320" y="500" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n23" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#666666;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="120" y="545" as="sourcePoint"/>
+                        <mxPoint x="1300" y="545" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n24" value="[donnees valides]" style="text;html=1;fontStyle=2;fontSize=9;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="126" y="547" width="1168" height="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="n25" value="upsertSwipe(userId, movieId, partyId, value)" style="html=1;endArrow=block;endFill=1;fontSize=10;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="980" y="577" as="sourcePoint"/>
+                        <mxPoint x="1200" y="577" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n26" style="html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="1195" y="574" width="10" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="n27" value="La contrainte UNIQUE&#xa;(userId, movieId, watchPartyId)&#xa;transforme un re-swipe&#xa;en mise a jour" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=9;" parent="1" vertex="1">
+                    <mxGeometry x="1110" y="622" width="260" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="n28" value="OK" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1200" y="692" as="sourcePoint"/>
+                        <mxPoint x="980" y="692" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n29" value="201 Created {message}" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="980" y="737" as="sourcePoint"/>
+                        <mxPoint x="320" y="737" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n30" value="carte suivante affichee" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="797" as="sourcePoint"/>
+                        <mxPoint x="100" y="797" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n31" value="paquet termine, retour au dashboard" style="html=1;endArrow=block;endFill=1;fontSize=10;dashed=1;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="857" as="sourcePoint"/>
+                        <mxPoint x="100" y="857" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n32" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="100" y="80" as="sourcePoint"/>
+                        <mxPoint x="100" y="922" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n33" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="320" y="80" as="sourcePoint"/>
+                        <mxPoint x="320" y="922" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n34" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="540" y="80" as="sourcePoint"/>
+                        <mxPoint x="540" y="922" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n35" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="760" y="80" as="sourcePoint"/>
+                        <mxPoint x="760" y="922" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n36" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="980" y="80" as="sourcePoint"/>
+                        <mxPoint x="980" y="922" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="n37" style="html=1;endArrow=none;startArrow=none;dashed=1;strokeColor=#000000;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="1200" y="80" as="sourcePoint"/>
+                        <mxPoint x="1200" y="922" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>

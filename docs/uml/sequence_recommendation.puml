@@ -12,10 +12,10 @@ participant "GenerateRecommendation\n(controller)" as Ctrl
 database "MySQL" as DB
 
 User -> Front : clique « Calculer le film »
-Front -> Router : POST /api/parties/1/recommendation/generate
-Router -> Ctrl : route generate
+Front -> Router : generateRecommendation(partyId)
+Router -> Ctrl : GenerateRecommendation(partyId)
 
-Ctrl -> DB : SELECT movie_id, COUNT(*) AS likes\nFROM swipes\nWHERE watch_party_id=? AND value='like'\nGROUP BY movie_id\nORDER BY likes DESC LIMIT 1
+Ctrl -> DB : findMostLikedMovie(partyId)
 note right of DB
   Cœur de l'algorithme :
   on compte les likes par film
@@ -27,9 +27,9 @@ alt aucun like pour cette party
   Ctrl --> Front : 404 Not Found {error}
 else un gagnant existe
   DB --> Ctrl : movieId, likesCount
-  Ctrl -> DB : INSERT INTO recommendations\n(watch_party_id, movie_id, likes_count)
+  Ctrl -> DB : insertRecommendation(partyId, movieId, likesCount)
   DB --> Ctrl : id de la recommandation
-  Ctrl -> DB : UPDATE watch_parties\nSET chosen_movie_id = movieId
+  Ctrl -> DB : updateChosenMovie(partyId, movieId)
   note right of DB
     Le film recommandé devient le film
     choisi de la party (utile pour la

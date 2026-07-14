@@ -18,11 +18,11 @@ database "MySQL" as DB
 
 Owner -> Front : ouvre le détail de sa WatchParty
 Owner -> Front : clique « Lancer le swipe »
-Front -> Router : POST /api/parties/{id}/start-swipe\nAuthorization: Bearer <token>
-Router -> PartyCtrl : route protégée (middlewares.RequireAuth)
+Front -> Router : startSwipeSession(partyId, token)
+Router -> PartyCtrl : StartSwipeSession(partyId, token)
 
 PartyCtrl -> PartyCtrl : extrait userId du token JWT\n(middlewares.UserIDFromContext)
-PartyCtrl -> DB : SELECT * FROM watch_parties WHERE id = ?
+PartyCtrl -> DB : findPartyById(id)
 
 alt WatchParty introuvable
   DB --> PartyCtrl : 0 ligne (sql.ErrNoRows)
@@ -35,16 +35,16 @@ else userId du token != creatorId
 else party déjà fermée
   PartyCtrl --> Front : 409 Conflict {error}
 else créateur confirmé, party ouverte
-  PartyCtrl -> DB : UPDATE watch_parties\nSET status = 'active' WHERE id = ?
+  PartyCtrl -> DB : updateStatus(id, "active")
   DB --> PartyCtrl : OK
   PartyCtrl --> Front : 200 OK {status: "active"}
 
   == 2. Récupérer le paquet de cartes (chaque participant) ==
 
-  Front -> Router : GET /api/parties/{id}/movies?userId={id}
-  Router -> MovieCtrl : route GetPartyMovies
+  Front -> Router : getPartyMovies(partyId, userId)
+  Router -> MovieCtrl : GetPartyMovies(partyId, userId)
 
-  MovieCtrl -> DB : SELECT * FROM movies\nWHERE id NOT IN (\n  SELECT movie_id FROM swipes\n  WHERE watch_party_id=? AND user_id=?\n)
+  MovieCtrl -> DB : findAvailableMovies(partyId, userId)
   note right of DB
     Exclut uniquement les films déjà
     swipés PAR CET utilisateur dans
@@ -56,6 +56,18 @@ else créateur confirmé, party ouverte
   MovieCtrl --> Front : 200 OK [films]
 
   Front --> Owner : affiche la première carte\nde film à swiper
+
+  == 3. La suite se déroule dans des séquences dédiées ==
+
+  ref over Owner, Front, Router, PartyCtrl, MovieCtrl, DB
+    Swipe d'un film (voir sequence_swipe.puml)
+    Chaque participant swipe son paquet, carte après carte
+  end ref
+
+  ref over Owner, Front, Router, PartyCtrl, MovieCtrl, DB
+    Génération de la recommandation (voir sequence_recommendation.puml)
+    Une fois les swipes terminés, calcul du film le plus aimé
+  end ref
 end
 
 @enduml

@@ -1,0 +1,61 @@
+@startuml WatchParty - Diagramme d'objets : avant/après acceptation d'une invitation
+' Scénario concret : un invité accepte une invitation en attente.
+' Montre l'état des instances avant et après POST /api/invitations/{token}/accept
+' (voir sequence_join_party.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT acceptInvitation()" {
+  object "party5 : WatchParty" as party5before {
+    id = 5
+    title = "Soiree finale"
+  }
+  object "inv1 : Invitation" as inv1before {
+    id = 1
+    watchPartyId = 5
+    invitedEmail = "emir@watchparty.com"
+    token = "12642d41..."
+    status = "pending"
+  }
+
+  party5before ..> inv1before : envoie
+
+  note bottom of inv1before
+    Aucun Participant n'existe encore
+    pour l'utilisateur invité (userId 6) :
+    l'invitation n'a pas été acceptée.
+  end note
+}
+
+package "APRÈS acceptInvitation()" {
+  object "party5 : WatchParty" as party5after {
+    id = 5
+    title = "Soiree finale"
+  }
+  object "inv1 : Invitation" as inv1after {
+    id = 1
+    watchPartyId = 5
+    invitedEmail = "emir@watchparty.com"
+    token = "12642d41..."
+    status = "accepted"
+  }
+  object "part1 : Participant" as part1 {
+    id = 4
+    watchPartyId = 5
+    userId = 6
+    role = "member"
+  }
+
+  party5after ..> inv1after : envoie
+  party5after ..> part1 : compte
+
+  note bottom of part1
+    Créé par acceptInvitation() : le champ
+    status de inv1 passe de "pending" à
+    "accepted" pour empêcher toute réutilisation
+    du même token.
+  end note
+}
+
+@enduml

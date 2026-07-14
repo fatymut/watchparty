@@ -1,7 +1,7 @@
 # Rapport — Partie Backend (Amel)
 
 > Brouillon à reformuler et intégrer dans le rapport global du groupe.
-> Diagrammes associés : `docs/uml/class_diagram.puml`, `sequence_lancer_swipe.puml`, `sequence_swipe.puml`, `sequence_recommendation.puml`, `sequence_notation.puml`, `sequence_join_party.puml`, `object_diagram_recommendation.puml`.
+> Diagrammes associés : `docs/uml/class_diagram.puml`, `use_case_diagram.puml`, `sequence_creation_soiree.puml`, `sequence_lancer_swipe.puml`, `sequence_swipe.puml`, `sequence_recommendation.puml`, `sequence_notation.puml`, `sequence_join_party.puml`, `object_diagram_recommendation.puml`, `object_diagram_swipe.puml`, `object_diagram_invitation.puml`. Version `.drawio` de chacun disponible dans `docs/uml/drawio/`.
 
 ## 1. Rôle du backend dans le projet
 
