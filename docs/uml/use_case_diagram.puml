@@ -1,7 +1,10 @@
 @startuml WatchParty - Diagramme de cas d'utilisation
 ' Fidele au sujet officiel : 5 acteurs officiels + 1 acteur "Participant" ajoute
-' pour affiner la hierarchie (repris d'une relecture croisee avec Emir), 26 cas
-' d'utilisation, 3 include, 4 extend, generalisations entre acteurs ET entre cas.
+' pour affiner la hierarchie (repris d'une relecture croisee avec Emir), 27 cas
+' numerotes + 5 scenarios d'extension/specialisation, 3 include, 4 extend,
+' generalisations entre acteurs ET entre cas. Associations reparties par
+' responsabilite reelle de l'acteur (pas par theme) pour limiter les
+' croisements de lignes dans le rendu .drawio.
 
 left to right direction
 skinparam shadowing false
@@ -41,6 +44,7 @@ rectangle "WatchParty" {
   usecase "Créer une soirée film" as UC7
   usecase "Modifier une soirée" as UC8
   usecase "Annuler une soirée" as UC9
+  usecase "Clôturer une soirée" as UC27
   usecase "Consulter ses soirées" as UC13
   usecase "Consulter le détail\nd'une soirée" as UC14
 
@@ -73,12 +77,14 @@ rectangle "WatchParty" {
 }
 
 ' --- Associations acteur -> cas d'utilisation ---
+' Chaque cas est associé à l'acteur le plus proche fonctionnellement (et non
+' regroupé par thème), pour limiter les croisements de lignes sur le schéma.
 Visiteur --> UC1
 Visiteur --> UC2
+Visiteur --> UC5
 
 UC --> UC3
 UC --> UC4
-UC --> UC5
 UC --> UC6
 UC --> UC13
 UC --> UC14
@@ -86,18 +92,18 @@ UC --> UC11
 UC --> UC12
 UC --> UC21
 UC --> UC22
-UC --> UC23
-UC --> UC7
 
-Part --> UC16
-Part --> UC17
+Part --> UCSwipe
 
+Createur --> UC7
 Createur --> UC8
 Createur --> UC9
+Createur --> UC27
 Createur --> UC10
 Createur --> UC15
 Createur --> UC20
 
+Admin --> UC23
 Admin --> UC24
 Admin --> UC25
 Admin --> UC26
