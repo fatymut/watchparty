@@ -1,0 +1,16 @@
+<mxfile host="app.diagrams.net" version="24.7.5">
+  <diagram name="WatchParty - Diagramme d&#x27;objets Inscription" id="WatchParty_-_Diagramme_d'objets_Inscription">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1080" pageHeight="340" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+<mxCell id="n1" value="AVANT le register()" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;fontStyle=1;fontSize=13;spacingLeft=8;spacingTop=6;fillColor=none;strokeColor=#666666;" vertex="1" parent="1"><mxGeometry x="40" y="40" width="400" height="150" as="geometry" /></mxCell>
+<mxCell id="n2" value="APRES le register()" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;fontStyle=1;fontSize=13;spacingLeft=8;spacingTop=6;fillColor=none;strokeColor=#666666;" vertex="1" parent="1"><mxGeometry x="500" y="40" width="500" height="260" as="geometry" /></mxCell>
+<mxCell id="n3" value="Aucune instance User n&#x27;existe encore&#10;pour l&#x27;email &quot;faty@watchparty.com&quot;." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="80" y="100" width="320" height="60" as="geometry" /></mxCell>
+<mxCell id="n4" value="user6 : User" style="swimlane;fontStyle=4;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=1;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#000000;align=center;" vertex="1" parent="1"><mxGeometry x="540" y="100" width="220" height="104" as="geometry" /></mxCell>
+<mxCell id="n5" value="id = 6&#10;username = &quot;faty&quot;&#10;email = &quot;faty@watchparty.com&quot;&#10;passwordHash = &quot;$2a$10$...&quot;" style="text;html=1;strokeColor=inherit;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;spacingTop=4;overflow=hidden;whiteSpace=wrap;fontSize=11;" vertex="1" parent="n4"><mxGeometry y="30" width="220" height="74" as="geometry" /></mxCell>
+<mxCell id="n6" value="passwordHash genere par bcrypt (jamais le mot de&#10;passe en clair). Contrainte UNIQUE sur email : une&#10;deuxieme inscription avec le meme email echoue en 409." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="540" y="220" width="420" height="70" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

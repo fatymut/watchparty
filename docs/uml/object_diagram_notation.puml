@@ -1,0 +1,44 @@
+@startuml WatchParty - Diagramme d'objets : avant/après une notation
+' Scénario concret (bonus) : un participant note le film choisi via
+' POST /api/parties/{id}/notations (voir sequence_notation.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT createNotation()" {
+  object "party7 : WatchParty" as party7before {
+    id = 7
+    chosenMovieId = 4
+  }
+
+  note bottom of party7before
+    chosenMovieId déjà fixé par generateRecommendation().
+    Aucune instance Notation n'existe encore pour
+    (watchPartyId=7, userId=6).
+  end note
+}
+
+package "APRÈS createNotation()" {
+  object "party7 : WatchParty" as party7after {
+    id = 7
+    chosenMovieId = 4
+  }
+  object "notation1 : Notation" as notation1 {
+    id = 3
+    watchPartyId = 7
+    movieId = 4
+    userId = 6
+    rating = 5
+  }
+
+  party7after ..> notation1 : reçoit
+
+  note bottom of notation1
+    Contrainte UNIQUE (watchPartyId, userId) : une
+    deuxième notation du même participant MET À JOUR
+    ce même objet (ON DUPLICATE KEY UPDATE rating),
+    n'en crée pas un second.
+  end note
+}
+
+@enduml

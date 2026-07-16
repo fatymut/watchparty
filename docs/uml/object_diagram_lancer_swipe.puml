@@ -1,0 +1,38 @@
+@startuml WatchParty - Diagramme d'objets : avant/après lancement de la session de swipe
+' Scénario concret : le créateur lance la session de swipe via
+' POST /api/parties/{id}/start-swipe (protégé par JWT, voir sequence_lancer_swipe.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT startSwipeSession()" {
+  object "party7 : WatchParty" as party7before {
+    id = 7
+    title = "Soirée ciné vendredi"
+    status = "draft"
+    creatorId = 6
+  }
+
+  note bottom of party7before
+    status = "draft" : les participants ne peuvent
+    pas encore swiper (liste des films non ouverte).
+  end note
+}
+
+package "APRÈS startSwipeSession()" {
+  object "party7 : WatchParty" as party7after {
+    id = 7
+    title = "Soirée ciné vendredi"
+    status = "active"
+    creatorId = 6
+  }
+
+  note bottom of party7after
+    Vérification préalable : userId extrait du JWT ==
+    creatorId (sinon 403 Forbidden). status passe de
+    "draft" à "active" : les participants peuvent
+    désormais appeler POST /parties/{id}/swipes.
+  end note
+}
+
+@enduml

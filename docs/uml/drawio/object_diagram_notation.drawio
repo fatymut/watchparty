@@ -1,0 +1,21 @@
+<mxfile host="app.diagrams.net" version="24.7.5">
+  <diagram name="WatchParty - Diagramme d&#x27;objets Notation" id="WatchParty_-_Diagramme_d'objets_Notation">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1080" pageHeight="380" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+<mxCell id="n1" value="AVANT le createNotation()" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;fontStyle=1;fontSize=13;spacingLeft=8;spacingTop=6;fillColor=none;strokeColor=#666666;" vertex="1" parent="1"><mxGeometry x="40" y="40" width="400" height="220" as="geometry" /></mxCell>
+<mxCell id="n2" value="APRES le createNotation()" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;fontStyle=1;fontSize=13;spacingLeft=8;spacingTop=6;fillColor=none;strokeColor=#666666;" vertex="1" parent="1"><mxGeometry x="480" y="40" width="560" height="300" as="geometry" /></mxCell>
+<mxCell id="n3" value="party7 : WatchParty" style="swimlane;fontStyle=4;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=1;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#000000;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="100" width="200" height="72" as="geometry" /></mxCell>
+<mxCell id="n4" value="id = 7&#10;chosenMovieId = 4" style="text;html=1;strokeColor=inherit;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;spacingTop=4;overflow=hidden;whiteSpace=wrap;fontSize=11;" vertex="1" parent="n3"><mxGeometry y="30" width="200" height="42" as="geometry" /></mxCell>
+<mxCell id="n5" value="chosenMovieId deja fixe. Aucune instance&#10;Notation n&#x27;existe encore pour (watchPartyId=7, userId=6)." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="80" y="190" width="320" height="60" as="geometry" /></mxCell>
+<mxCell id="n6" value="party7 : WatchParty" style="swimlane;fontStyle=4;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=1;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#000000;align=center;" vertex="1" parent="1"><mxGeometry x="520" y="100" width="200" height="72" as="geometry" /></mxCell>
+<mxCell id="n7" value="id = 7&#10;chosenMovieId = 4" style="text;html=1;strokeColor=inherit;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;spacingTop=4;overflow=hidden;whiteSpace=wrap;fontSize=11;" vertex="1" parent="n6"><mxGeometry y="30" width="200" height="42" as="geometry" /></mxCell>
+<mxCell id="n8" value="notation1 : Notation" style="swimlane;fontStyle=4;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=1;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#000000;align=center;" vertex="1" parent="1"><mxGeometry x="780" y="100" width="220" height="120" as="geometry" /></mxCell>
+<mxCell id="n9" value="id = 3&#10;watchPartyId = 7&#10;movieId = 4&#10;userId = 6&#10;rating = 5" style="text;html=1;strokeColor=inherit;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;spacingTop=4;overflow=hidden;whiteSpace=wrap;fontSize=11;" vertex="1" parent="n8"><mxGeometry y="30" width="220" height="90" as="geometry" /></mxCell>
+<mxCell id="n10" value="recoit" style="html=1;endArrow=none;startArrow=none;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#000000;" edge="1" parent="1" source="n6" target="n8"><mxGeometry relative="1" as="geometry" /></mxCell>
+<mxCell id="n11" value="Contrainte UNIQUE (watchPartyId, userId) : une&#10;deuxieme notation du meme participant MET A JOUR&#10;ce meme objet, n&#x27;en cree pas un second." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="520" y="270" width="460" height="65" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

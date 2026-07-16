@@ -1,0 +1,18 @@
+<mxfile host="app.diagrams.net" version="24.7.5">
+  <diagram name="WatchParty - Diagramme d&#x27;objets Connexion" id="WatchParty_-_Diagramme_d'objets_Connexion">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1080" pageHeight="340" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+<mxCell id="n1" value="AVANT le login()" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;fontStyle=1;fontSize=13;spacingLeft=8;spacingTop=6;fillColor=none;strokeColor=#666666;" vertex="1" parent="1"><mxGeometry x="40" y="40" width="460" height="260" as="geometry" /></mxCell>
+<mxCell id="n2" value="APRES le login()" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;verticalAlign=top;align=left;fontStyle=1;fontSize=13;spacingLeft=8;spacingTop=6;fillColor=none;strokeColor=#666666;" vertex="1" parent="1"><mxGeometry x="560" y="40" width="460" height="260" as="geometry" /></mxCell>
+<mxCell id="n3" value="user6 : User" style="swimlane;fontStyle=4;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=1;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#000000;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="100" width="220" height="104" as="geometry" /></mxCell>
+<mxCell id="n4" value="id = 6&#10;username = &quot;faty&quot;&#10;email = &quot;faty@watchparty.com&quot;&#10;passwordHash = &quot;$2a$10$...&quot;" style="text;html=1;strokeColor=inherit;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;spacingTop=4;overflow=hidden;whiteSpace=wrap;fontSize=11;" vertex="1" parent="n3"><mxGeometry y="30" width="220" height="74" as="geometry" /></mxCell>
+<mxCell id="n5" value="L&#x27;instance existe deja en base (creee a&#10;l&#x27;inscription). Aucun token n&#x27;est encore emis." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="80" y="220" width="380" height="60" as="geometry" /></mxCell>
+<mxCell id="n6" value="user6 : User" style="swimlane;fontStyle=4;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=1;resizeParent=0;resizeParentMax=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;strokeColor=#000000;align=center;" vertex="1" parent="1"><mxGeometry x="600" y="100" width="220" height="104" as="geometry" /></mxCell>
+<mxCell id="n7" value="id = 6&#10;username = &quot;faty&quot;&#10;email = &quot;faty@watchparty.com&quot;&#10;passwordHash = &quot;$2a$10$...&quot;" style="text;html=1;strokeColor=inherit;fillColor=none;align=left;verticalAlign=top;spacingLeft=6;spacingRight=4;spacingTop=4;overflow=hidden;whiteSpace=wrap;fontSize=11;" vertex="1" parent="n6"><mxGeometry y="30" width="220" height="74" as="geometry" /></mxCell>
+<mxCell id="n8" value="L&#x27;instance User n&#x27;est PAS modifiee par le login (pas&#10;d&#x27;UPDATE en base). Le JWT est genere puis renvoye au&#10;client : ce n&#x27;est pas un objet persistant du modele." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=6;spacingTop=6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="600" y="220" width="380" height="70" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

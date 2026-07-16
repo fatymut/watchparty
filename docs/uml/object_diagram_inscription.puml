@@ -1,0 +1,31 @@
+@startuml WatchParty - Diagramme d'objets : avant/après une inscription
+' Scénario concret : un visiteur crée un compte via POST /api/register.
+' Montre l'état des instances avant et après cet appel (voir sequence_inscription.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT register()" {
+  note as n1
+    Aucune instance User n'existe encore
+    pour l'email "faty@watchparty.com".
+  end note
+}
+
+package "APRÈS register()" {
+  object "user6 : User" as user6 {
+    id = 6
+    username = "faty"
+    email = "faty@watchparty.com"
+    passwordHash = "$2a$10$..."
+  }
+
+  note bottom of user6
+    passwordHash généré par bcrypt (jamais le mot
+    de passe en clair). Contrainte UNIQUE sur email :
+    une deuxième inscription avec le même email
+    échoue en 409 Conflict (cf EXT1 du cas d'utilisation).
+  end note
+}
+
+@enduml

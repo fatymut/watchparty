@@ -1,0 +1,39 @@
+@startuml WatchParty - Diagramme d'objets : avant/après une connexion
+' Scénario concret : un utilisateur déjà inscrit se connecte via POST /api/login.
+' Montre l'état des instances avant et après cet appel (voir sequence_connexion.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT login()" {
+  object "user6 : User" as user6before {
+    id = 6
+    username = "faty"
+    email = "faty@watchparty.com"
+    passwordHash = "$2a$10$..."
+  }
+
+  note bottom of user6before
+    L'instance existe déjà en base (créée à
+    l'inscription). Aucun token n'est encore émis.
+  end note
+}
+
+package "APRÈS login()" {
+  object "user6 : User" as user6after {
+    id = 6
+    username = "faty"
+    email = "faty@watchparty.com"
+    passwordHash = "$2a$10$..."
+  }
+
+  note bottom of user6after
+    L'instance User n'est PAS modifiée par le login
+    (pas d'UPDATE en base). Le JWT est généré côté
+    serveur puis renvoyé au client, qui le stocke
+    lui-même (localStorage) : ce n'est pas un objet
+    persistant du modèle de classes.
+  end note
+}
+
+@enduml

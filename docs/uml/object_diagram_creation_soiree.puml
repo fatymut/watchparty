@@ -1,0 +1,50 @@
+@startuml WatchParty - Diagramme d'objets : avant/après création d'une soirée
+' Scénario concret : un utilisateur connecté crée une watch party via POST /api/parties.
+' Montre l'état des instances avant et après cet appel (voir sequence_creation_soiree.puml).
+
+skinparam objectAttributeIconSize 0
+skinparam shadowing false
+
+package "AVANT createParty()" {
+  object "user6 : User" as user6before {
+    id = 6
+    username = "faty"
+  }
+
+  note bottom of user6before
+    Aucune instance WatchParty ni Participant
+    n'existe encore pour cet utilisateur.
+  end note
+}
+
+package "APRÈS createParty()" {
+  object "user6 : User" as user6after {
+    id = 6
+    username = "faty"
+  }
+  object "party7 : WatchParty" as party7 {
+    id = 7
+    title = "Soirée ciné vendredi"
+    status = "draft"
+    creatorId = 6
+    chosenMovieId = null
+  }
+  object "part1 : Participant" as part1 {
+    id = 9
+    watchPartyId = 7
+    userId = 6
+    role = "creator"
+  }
+
+  user6after ..> party7 : crée
+  party7 ..> part1 : compte
+  user6after ..> part1 : devient
+
+  note bottom of part1
+    createParty() insère AUTOMATIQUEMENT le créateur
+    comme Participant (role="creator") : il n'a pas
+    besoin de s'inviter lui-même.
+  end note
+}
+
+@enduml
